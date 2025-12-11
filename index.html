@@ -109,7 +109,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI - Changements pour la taille mobile */
+        /* Keypad UI - Changements pour la taille mobile (PLUS PETIT) */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -122,23 +122,23 @@
         #keypad-box {
             background-color: #222;
             color: #00ff00;
-            padding: 20px;
+            padding: 15px; /* Padding réduit */
             border: 5px solid #00ff00;
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 0 20px rgba(0,255,0,0.5);
-            width: 300px;
-            /* Changement pour la taille mobile */
-            max-width: 90%; 
+            /* TAILLE RÉDUITE POUR MOBILE */
+            width: 250px; 
+            max-width: 85%; /* S'assurer qu'il rentre */
         }
         #keypad-display {
             background-color: #000;
             border: 2px solid #00ff00;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 24px;
-            letter-spacing: 5px;
-            min-height: 30px;
+            padding: 8px; /* Padding réduit */
+            margin-bottom: 10px; /* Marge réduite */
+            font-size: 22px; /* Texte légèrement réduit */
+            letter-spacing: 4px; /* Espacement réduit */
+            min-height: 25px;
         }
         #keypad-input {
             opacity: 0; /* Caché, utilisé seulement pour la saisie clavier (maintenu pour compatibilité) */
@@ -153,14 +153,14 @@
         .keypad-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px; /* Écart réduit */
         }
         .keypad-buttons button {
             background-color: #444;
             color: #00ff00;
             border: 1px solid #00ff00;
-            padding: 15px;
-            font-size: 18px;
+            padding: 12px; /* Padding réduit */
+            font-size: 16px; /* Texte réduit */
             cursor: pointer;
             transition: background-color 0.1s;
         }
