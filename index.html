@@ -109,7 +109,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI - MISE À JOUR : Optimisation verticale pour mobile */
+        /* Keypad UI - MISE À JOUR : Ultra-Optimisation verticale pour mobile */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -122,26 +122,26 @@
         #keypad-box {
             background-color: #222;
             color: #00ff00;
-            padding: 15px; /* Réduction du padding */
+            padding: 10px; /* Réduction drastique du padding */
             border: 2px solid #00ff00;
             border-radius: 4px;
             text-align: center;
             width: 90%; 
-            max-width: 400px; 
+            max-width: 350px; /* Légère réduction de la largeur max */
         }
         #keypad-box h2 {
-            font-size: 1.3rem; /* Réduction de la taille de la police */
+            font-size: 1.1rem; /* Réduction de la taille de la police */
             margin-top: 5px;
-            margin-bottom: 8px; /* Réduction de la marge */
+            margin-bottom: 5px; /* Réduction de la marge */
         }
         #keypad-display {
             background-color: #000;
             border: 1px solid #00ff00;
-            padding: 10px;
-            margin-bottom: 10px; /* Réduction de la marge */
-            font-size: 24px;
-            letter-spacing: 5px;
-            min-height: 20px;
+            padding: 8px; /* Réduction du padding */
+            margin-bottom: 8px; /* Réduction de la marge */
+            font-size: 20px; /* Réduction de la police */
+            letter-spacing: 4px; /* Réduction de l'espacement */
+            min-height: 18px;
         }
         #keypad-input {
             opacity: 0; 
@@ -155,14 +155,14 @@
         .keypad-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
+            gap: 6px; /* Réduction de l'espace entre les boutons */
         }
         .keypad-buttons button {
             background-color: #444;
             color: #00ff00;
             border: 1px solid #00ff00;
-            padding: 12px; /* Réduction du padding */
-            font-size: 1.1rem; /* Réduction de la taille de la police */
+            padding: 8px; /* Réduction du padding des boutons */
+            font-size: 1rem; /* Réduction de la taille de la police */
             cursor: pointer;
             transition: background-color 0.1s;
             border-radius: 0;
@@ -175,9 +175,9 @@
             color: #000;
         }
         #keypad-box > button { 
-            margin-top: 10px; /* Réduction de la marge */
-            font-size: 1rem;
-            padding: 8px 15px; /* Réduction du padding */
+            margin-top: 8px; /* Réduction de la marge */
+            font-size: 0.9rem; /* Réduction de la police */
+            padding: 6px 10px; /* Réduction du padding du bouton FERMER */
         }
         
         /* Menu de démarrage / Fin */
@@ -849,7 +849,7 @@
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         });
 
-        // Keypad Functions - MODIFIÉES
+        // Keypad Functions - ULTRA-COMPRESSED
         let currentCodeCallback = null;
         let correctCode = "";
         
