@@ -320,7 +320,6 @@
     </div>
 
     <!-- Keypad Overlay (Pour taper des codes) -->
-    <!-- FIX: Ajout de la structure complète du pavé numérique -->
     <div id="keypad-overlay" class="hidden">
         <div id="keypad-box">
             <h2>Clavier de Sécurité</h2>
@@ -763,20 +762,17 @@
         // --- CORE FUNCTIONS ---
 
         function init() {
-            if (gameState.isMobile) {
-                // Sur mobile, on affiche directement l'écran de démarrage sans Pointer Lock
-                document.getElementById('play-btn').addEventListener('click', () => {
-                    loadLevel1();
-                    document.getElementById('blocker').classList.add('hidden');
-                    gameState.isPaused = false;
-                });
-            } else {
-                // Sur PC, on utilise le Pointer Lock
-                document.getElementById('play-btn').addEventListener('click', () => {
-                    loadLevel1();
+            // Unifier le comportement du bouton de jeu pour PC et Mobile
+            document.getElementById('play-btn').addEventListener('click', () => {
+                loadLevel1();
+                document.getElementById('blocker').classList.add('hidden');
+                gameState.isPaused = false;
+                
+                // Activer le Pointer Lock UNIQUEMENT sur PC
+                if (!gameState.isMobile && document.body.requestPointerLock) {
                     document.body.requestPointerLock();
-                });
-            }
+                }
+            });
             
             updateInventoryUI();
             
@@ -784,6 +780,10 @@
             camera.position.set(0, PLAYER_HEIGHT, 0); 
             
             setupMobileControls();
+            
+            // Assurer que le blocker est visible au début (par défaut)
+            document.getElementById('blocker').classList.remove('hidden');
+            gameState.isPaused = true;
         }
 
         function nextLevel(n) {
@@ -863,7 +863,7 @@
         document.getElementById('note-overlay').addEventListener('click', () => {
             document.getElementById('note-overlay').classList.add('hidden');
             gameState.isPaused = false;
-            // Réactiver le Pointer Lock si ce n'est pas un appareil mobile
+            // Réactiver le Pointer Lock si c'est un PC (pas un mobile)
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         });
 
@@ -876,7 +876,6 @@
             correctCode = code;
             currentCodeCallback = callback;
             
-            // FIX: Ces éléments sont maintenant présents dans le DOM
             const keypadInput = document.getElementById('keypad-input');
             const keypadDisplay = document.getElementById('keypad-display');
             
@@ -903,6 +902,7 @@
         window.closeKeypad = () => {
             document.getElementById('keypad-overlay').classList.add('hidden');
             gameState.isPaused = false;
+            // Réactiver le Pointer Lock si c'est un PC (pas un mobile)
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         };
 
@@ -913,6 +913,8 @@
         
         document.addEventListener('keydown', e => {
             if(gameState.isMobile) return; // Ignorer sur mobile
+            if(gameState.isPaused) return; // Ignorer si en pause
+
             if(e.key.toLowerCase() === 'z' || e.key === 'ArrowUp') keys.w = true;
             if(e.key.toLowerCase() === 'q' || e.key === 'ArrowLeft') keys.a = true;
             if(e.key.toLowerCase() === 's' || e.key === 'ArrowDown') keys.s = true;
@@ -1033,21 +1035,13 @@
                 if (gameState.isPaused) return;
                 e.preventDefault();
                 
-                // Assurez-vous que le navigateur supporte movementX/Y (ce qui est le cas pour les événements tactiles modernes)
                 const touch = e.changedTouches[0];
                 const sensitivity = 0.005; 
                 
-                // Mouvement de la caméra basé sur le mouvement relatif du doigt
-                // Note: 'movementX' et 'movementY' ne sont pas toujours disponibles sur 'TouchEvent'
-                // Une approche alternative est de stocker la position précédente, mais pour l'instant on se fie à ce que 'movementX/Y' soit injecté par le navigateur ou polyfillé.
-                // Si cela ne fonctionne pas, il faudra stocker touch.clientX/Y dans touchstart/move et calculer le delta.
-                
-                // En l'absence de delta fiable, on utilise un delta simple (moins précis sans bibliothèque)
-                // Pour l'instant on garde le code d'origine qui fonctionne souvent.
-                
                 // Rotation de la caméra
-                camera.rotation.y -= touch.movementX * sensitivity;
-                camera.rotation.x -= touch.movementY * sensitivity;
+                // NOTE: Les navigateurs mobiles fournissent souvent movementX/Y dans l'objet TouchEvent pour les deltas
+                camera.rotation.y -= (touch.movementX || 0) * sensitivity;
+                camera.rotation.x -= (touch.movementY || 0) * sensitivity;
                 camera.rotation.x = Math.max(-1.5, Math.min(1.5, camera.rotation.x));
             }, { passive: false });
 
@@ -1132,13 +1126,16 @@
 
         // Pointer Lock Events
         document.addEventListener('pointerlockchange', () => {
+            // Cette fonction ne devrait s'exécuter que sur PC
+            if(gameState.isMobile) return; 
+
             const blocker = document.getElementById('blocker');
             if(document.pointerLockElement === document.body) {
                 blocker.classList.add('hidden');
                 gameState.isPaused = false;
             } else {
-                // Sauf si c'est un appareil mobile (qui n'utilise pas le pointer lock)
-                if(!gameState.isPaused && !gameState.isMobile) blocker.classList.remove('hidden'); 
+                // Sauf si l'utilisateur est en train de lire une note ou d'utiliser le clavier
+                if(!gameState.isPaused) blocker.classList.remove('hidden'); 
             }
         });
 
