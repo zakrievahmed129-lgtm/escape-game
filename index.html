@@ -109,7 +109,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI */
+        /* Keypad UI - Changements pour la taille mobile */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -128,6 +128,8 @@
             text-align: center;
             box-shadow: 0 0 20px rgba(0,255,0,0.5);
             width: 300px;
+            /* Changement pour la taille mobile */
+            max-width: 90%; 
         }
         #keypad-display {
             background-color: #000;
@@ -139,9 +141,14 @@
             min-height: 30px;
         }
         #keypad-input {
-            opacity: 0; /* Caché, utilisé seulement pour la saisie clavier */
+            opacity: 0; /* Caché, utilisé seulement pour la saisie clavier (maintenu pour compatibilité) */
             position: absolute; 
             left: -9999px;
+            /* Ajout: Désactiver les fonctionnalités du clavier virtuel (mobile) */
+            ime-mode: inactive; 
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: none; 
         }
         .keypad-buttons {
             display: grid;
@@ -325,19 +332,21 @@
         <div id="keypad-box">
             <h2>Clavier de Sécurité</h2>
             <div id="keypad-display">----</div>
-            <input type="text" id="keypad-input" maxlength="4" oninput="document.getElementById('keypad-display').innerText = this.value || '----';">
+            <!-- L'input est masqué pour éviter le clavier virtuel mobile, la saisie se fait via les boutons -->
+            <input type="text" id="keypad-input" maxlength="4" readonly onfocus="this.blur()" oninput="document.getElementById('keypad-display').innerText = this.value || '----';">
             <div class="keypad-buttons">
-                <button onclick="document.getElementById('keypad-input').value += '1'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">1</button>
-                <button onclick="document.getElementById('keypad-input').value += '2'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">2</button>
-                <button onclick="document.getElementById('keypad-input').value += '3'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">3</button>
-                <button onclick="document.getElementById('keypad-input').value += '4'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">4</button>
-                <button onclick="document.getElementById('keypad-input').value += '5'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">5</button>
-                <button onclick="document.getElementById('keypad-input').value += '6'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">6</button>
-                <button onclick="document.getElementById('keypad-input').value += '7'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">7</button>
-                <button onclick="document.getElementById('keypad-input').value += '8'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">8</button>
-                <button onclick="document.getElementById('keypad-input').value += '9'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">9</button>
-                <button onclick="document.getElementById('keypad-input').value = ''; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">CLR</button>
-                <button onclick="document.getElementById('keypad-input').value += '0'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">0</button>
+                <!-- Les fonctions de saisie utilisent l'ajout de caractères à l'input masqué -->
+                <button onclick="appendKeypadValue('1')">1</button>
+                <button onclick="appendKeypadValue('2')">2</button>
+                <button onclick="appendKeypadValue('3')">3</button>
+                <button onclick="appendKeypadValue('4')">4</button>
+                <button onclick="appendKeypadValue('5')">5</button>
+                <button onclick="appendKeypadValue('6')">6</button>
+                <button onclick="appendKeypadValue('7')">7</button>
+                <button onclick="appendKeypadValue('8')">8</button>
+                <button onclick="appendKeypadValue('9')">9</button>
+                <button onclick="clearKeypad()">CLR</button>
+                <button onclick="appendKeypadValue('0')">0</button>
                 <button onclick="submitCode()">ENTRÉE</button>
             </div>
             <button onclick="closeKeypad()">FERMER</button>
@@ -390,8 +399,15 @@
             },
             
             // Détection Mobile
-            isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
+            isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0),
+            
+            // Facteur de luminosité mobile
+            mobileLightFactor: 1.5 // Augmente la lumière de 50% sur mobile
         };
+        
+        // Ajustement de l'intensité de la lumière en fonction de l'appareil
+        const lightIntensity = gameState.isMobile ? gameState.mobileLightFactor : 1;
+
 
         // --- THREE JS SETUP ---
         const scene = new THREE.Scene();
@@ -438,7 +454,7 @@
             updateInventoryUI();
         }
 
-        // --- BUILDER HELPERS (Les fonctions de construction restent les mêmes) ---
+        // --- BUILDER HELPERS ---
         function addMesh(mesh, isCollidable=true) {
             scene.add(mesh);
             currentLevelObjects.push(mesh);
@@ -485,7 +501,8 @@
         }
 
         function createLight(x, y, z, color=0xffaa00, intensity=1) {
-            const light = new THREE.PointLight(color, intensity, 10);
+            // Utilisation de lightIntensity (ajusté pour le mobile)
+            const light = new THREE.PointLight(color, intensity * lightIntensity, 10);
             light.position.set(x, y, z);
             light.castShadow = true;
             scene.add(light);
@@ -497,7 +514,7 @@
             currentLevelObjects.push(b);
         }
 
-        // ================= LEVELS (Inchagngés) =================
+        // ================= LEVELS =================
 
         function loadLevel1() {
             gameState.level = 1;
@@ -563,6 +580,7 @@
             fuseBox.userData.action = () => {
                 if(hasItem("Fusible Renforcé")) {
                     showMessage("Le fusible s'enclenche ! Courant rétabli.");
+                    // Utilisation de lightIntensity (ajusté pour le mobile)
                     createLight(0, 3, 5, 0x00ff00, 1); 
                     gameState.flags.powerOn = true;
                     removeItem("Fusible Renforcé"); 
@@ -824,9 +842,10 @@
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         });
 
-        // Keypad
+        // Keypad Functions - MODIFIÉES
         let currentCodeCallback = null;
         let correctCode = "";
+        
         function openKeypad(code, callback) {
             if(document.exitPointerLock) document.exitPointerLock();
             gameState.isPaused = true;
@@ -840,11 +859,28 @@
                 keypadInput.value = "";
                 keypadDisplay.innerText = "----";
                 document.getElementById('keypad-overlay').classList.remove('hidden');
-                keypadInput.focus();
+                // N'active pas le focus pour ne pas ouvrir le clavier virtuel
             } else {
                  console.error("Keypad elements not found in DOM.");
             }
         }
+        
+        // Nouvelle fonction pour ajouter une valeur (appelée par les boutons)
+        window.appendKeypadValue = (digit) => {
+             const keypadInput = document.getElementById('keypad-input');
+             if (keypadInput.value.length < keypadInput.maxLength) {
+                 keypadInput.value += digit;
+                 keypadInput.dispatchEvent(new Event('input'));
+             }
+        };
+        
+        // Nouvelle fonction pour effacer (appelée par CLR)
+        window.clearKeypad = () => {
+             const keypadInput = document.getElementById('keypad-input');
+             keypadInput.value = "";
+             keypadInput.dispatchEvent(new Event('input'));
+        };
+        
         window.submitCode = () => {
             const val = document.getElementById('keypad-input').value;
             if(val === correctCode) {
@@ -856,6 +892,7 @@
                 setTimeout(() => document.getElementById('keypad-display').innerText = "----", 1000);
             }
         };
+        
         window.closeKeypad = () => {
             document.getElementById('keypad-overlay').classList.add('hidden');
             gameState.isPaused = false;
