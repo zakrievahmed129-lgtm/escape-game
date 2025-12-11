@@ -18,22 +18,35 @@
             align-items: center;
         }
 
-        /* Réticule dynamique */
+        /* NOUVEAU Réticule SVG (Visible partout, géré par JS) */
+        #svg-crosshair-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 15; /* Au-dessus de l'interface utilisateur */
+        }
+        
+        /* Réticule dynamique CSS (Ancien, masqué sur mobile) */
         #crosshair {
+            /* Styles de l'ancien crosshair pour PC */
             width: 8px; height: 8px;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             border: 2px solid black;
             transition: all 0.2s;
+            position: relative; /* Nécessaire pour le centrage dans ui-layer */
+            display: none; /* Masqué par défaut, le SVG prend le relai */
+        }
+        #crosshair.pc-visible {
+             display: block;
         }
         #crosshair.active {
             width: 20px; height: 20px;
             background-color: transparent;
             border: 2px solid #00ff00;
             border-radius: 50%;
-        }
-        #crosshair.locked {
-            border-color: red;
         }
 
         #interaction-text {
@@ -109,7 +122,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI - MISE À JOUR : Ultra-Optimisation verticale pour mobile */
+        /* Keypad UI - Ultra-Optimisation verticale pour mobile */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -297,9 +310,6 @@
         @media (pointer: coarse) { /* Détecte les appareils tactiles */
             .pc-only { display: none !important; }
             .mobile-only { display: block; }
-
-            /* Réticule masqué sur mobile car il sera fixe */
-            #crosshair { display: none; }
             
             #interaction-text {
                 top: 55%; /* Ajuster la position pour ne pas gêner les boutons */
@@ -360,9 +370,24 @@
         </div>
     </div>
 
+    <!-- NOUVEAU RÉTICULE SVG -->
+    <div id="svg-crosshair-container">
+        <svg id="svg-crosshair" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cercle central simple (par défaut) -->
+            <circle id="ch-center" cx="15" cy="15" r="3" fill="#ffffff" opacity="0.9" />
+            
+            <!-- Lignes de réticule (par défaut) -->
+            <line id="ch-h1" x1="5" y1="15" x2="10" y2="15" stroke="#ffffff" stroke-width="2" opacity="0.7" />
+            <line id="ch-h2" x1="20" y1="15" x2="25" y2="15" stroke="#ffffff" stroke-width="2" opacity="0.7" />
+            <line id="ch-v1" x1="15" y1="5" x2="15" y2="10" stroke="#ffffff" stroke-width="2" opacity="0.7" />
+            <line id="ch-v2" x1="15" y1="20" x2="15" y2="25" stroke="#ffffff" stroke-width="2" opacity="0.7" />
+        </svg>
+    </div>
+
     <!-- UI Standard -->
     <div id="ui-layer">
-        <div id="crosshair" class="pc-only"></div>
+        <!-- L'ancien crosshair est conservé mais caché/non-utilisé, le SVG le remplace -->
+        <div id="crosshair" class="pc-only"></div> 
         <div id="interaction-text"></div>
         <div id="messages"></div>
         <div id="inventory">Inventaire: Vide</div>
@@ -750,7 +775,42 @@
         }
 
         // --- CORE FUNCTIONS ---
+        // Réticule SVG
+        const ch_center = document.getElementById('ch-center');
+        const ch_h1 = document.getElementById('ch-h1');
+        const ch_h2 = document.getElementById('ch-h2');
+        const ch_v1 = document.getElementById('ch-v1');
+        const ch_v2 = document.getElementById('ch-v2');
+        
+        // Fonction pour changer le style du réticule
+        function updateCrosshairStyle(isActive) {
+            const color = isActive ? "#00ff00" : "#ffffff";
+            const opacity = isActive ? 1.0 : 0.7;
+            const strokeWidth = isActive ? 3 : 2;
 
+            // Mise à jour du cercle central
+            ch_center.setAttribute('fill', color);
+            ch_center.setAttribute('r', isActive ? 4 : 3); 
+            ch_center.setAttribute('opacity', opacity);
+
+            // Mise à jour des lignes (croix)
+            const lines = [ch_h1, ch_h2, ch_v1, ch_v2];
+            lines.forEach(line => {
+                line.setAttribute('stroke', color);
+                line.setAttribute('stroke-width', strokeWidth);
+                line.setAttribute('opacity', opacity);
+            });
+            
+            // Sur activation, on réduit la longueur des lignes pour faire un "cercle" visuel
+            if (isActive) {
+                ch_h1.setAttribute('x2', 9); ch_h2.setAttribute('x1', 21);
+                ch_v1.setAttribute('y2', 9); ch_v2.setAttribute('y1', 21);
+            } else {
+                ch_h1.setAttribute('x2', 10); ch_h2.setAttribute('x1', 20);
+                ch_v1.setAttribute('y2', 10); ch_v2.setAttribute('y1', 20);
+            }
+        }
+        
         function init() {
             document.getElementById('play-btn').addEventListener('click', () => {
                 loadLevel1();
@@ -759,6 +819,8 @@
                 
                 if (!gameState.isMobile && document.body.requestPointerLock) {
                     document.body.requestPointerLock();
+                    // Assurer que le crosshair CSS PC-only est masqué, le SVG est universel
+                    document.getElementById('crosshair').classList.remove('pc-visible');
                 }
             });
             
@@ -1128,17 +1190,16 @@
                      camera.position.copy(nextPos);
                 }
                 
-                // Interact UI
+                // Interact UI & Crosshair SVG
                 const target = getInteractable();
-                const crosshair = document.getElementById('crosshair');
                 const text = document.getElementById('interaction-text');
                 
                 if(target) {
-                    if (!gameState.isMobile) crosshair.classList.add('active');
+                    updateCrosshairStyle(true); // Activer le style interactif
                     text.innerText = target.userData.name + (gameState.isMobile ? ' [CLIC]' : ' [Clic G]');
                     text.style.opacity = 1;
                 } else {
-                    if (!gameState.isMobile) crosshair.classList.remove('active');
+                    updateCrosshairStyle(false); // Revenir au style par défaut
                     text.style.opacity = 0;
                 }
             }
