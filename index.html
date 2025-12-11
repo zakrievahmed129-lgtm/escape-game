@@ -109,7 +109,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI - MISE À JOUR POUR ÊTRE PLUS PETIT */
+        /* Keypad UI - MISE À JOUR POUR ÊTRE TRÈS PETIT */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -122,22 +122,27 @@
         #keypad-box {
             background-color: #222;
             color: #00ff00;
-            padding: 15px; /* Réduction du padding */
-            border: 5px solid #00ff00;
-            border-radius: 10px;
+            padding: 10px; /* Réduction drastique du padding */
+            border: 4px solid #00ff00; /* Bordure plus fine */
+            border-radius: 8px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0,255,0,0.5);
-            width: 250px; /* Réduction de la largeur */
+            box-shadow: 0 0 15px rgba(0,255,0,0.5);
+            width: 200px; /* Réduction de la largeur */
             max-width: 90%; 
+        }
+        #keypad-box h2 {
+            font-size: 1.1rem; /* Titre plus petit */
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
         #keypad-display {
             background-color: #000;
             border: 2px solid #00ff00;
-            padding: 10px;
-            margin-bottom: 10px; /* Réduction de la marge */
-            font-size: 20px; /* Réduction de la taille de police */
-            letter-spacing: 5px;
-            min-height: 25px; /* Réduction de la hauteur minimale */
+            padding: 8px; /* Réduction du padding */
+            margin-bottom: 8px;
+            font-size: 18px; /* Taille de police réduite */
+            letter-spacing: 4px; /* Espacement ajusté */
+            min-height: 20px;
         }
         #keypad-input {
             opacity: 0; 
@@ -151,14 +156,14 @@
         .keypad-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px; /* Réduction de l'espace entre les boutons */
         }
         .keypad-buttons button {
             background-color: #444;
             color: #00ff00;
             border: 1px solid #00ff00;
-            padding: 12px; /* Réduction du padding des boutons */
-            font-size: 16px; /* Réduction de la taille de police des boutons */
+            padding: 10px; /* Padding des boutons réduit */
+            font-size: 14px; /* Taille de police des boutons réduite */
             cursor: pointer;
             transition: background-color 0.1s;
         }
@@ -168,6 +173,11 @@
         .keypad-buttons button:active {
             background-color: #00ff00;
             color: #000;
+        }
+        #keypad-box > button { /* Le bouton FERMER */
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 5px 10px;
         }
         
         /* Menu de démarrage / Fin */
@@ -200,7 +210,7 @@
         .hidden { display: none !important; }
 
         /* -------------------------------------------------------------------------- */
-        /* MOBILE CONTROLS STYLES - MISE À JOUR POUR PETITS BOUTONS/JOYSTICK           */
+        /* MOBILE CONTROLS STYLES                                                    */
         /* -------------------------------------------------------------------------- */
         #mobile-controls {
             position: absolute;
@@ -214,11 +224,11 @@
         /* Mouvement Joystick (Gauche) */
         #joystick-area {
             position: absolute;
-            bottom: 30px; /* Moins bas */
-            left: 30px;  /* Moins à gauche */
-            width: 120px; /* Taille réduite */
-            height: 120px; /* Taille réduite */
-            background: rgba(0, 0, 0, 0.4); /* Plus transparent */
+            bottom: 30px; 
+            left: 30px;  
+            width: 120px; 
+            height: 120px; 
+            background: rgba(0, 0, 0, 0.4); 
             border: 1px solid rgba(0, 255, 0, 0.5); 
             border-radius: 50%;
             pointer-events: auto;
@@ -229,8 +239,8 @@
         }
 
         #joystick-handle {
-            width: 50px; /* Handle réduit */
-            height: 50px; /* Handle réduit */
+            width: 50px; 
+            height: 50px; 
             background: rgba(0, 255, 0, 0.7);
             border-radius: 50%;
             transform: translate(0, 0);
@@ -241,21 +251,20 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 70%; /* Augmenter la zone de regard */
+            width: 70%; 
             height: 100%;
             pointer-events: auto;
-            /* Visuellement transparent, mais actif */
         }
         
         /* Boutons d'interaction */
         .mobile-button {
             position: absolute;
-            width: 60px; /* Boutons réduits */
-            height: 60px; /* Boutons réduits */
+            width: 60px; 
+            height: 60px; 
             background: rgba(0, 255, 0, 0.6);
             border: 2px solid #00ff00;
             color: #000;
-            font-size: 12px; /* Texte plus petit */
+            font-size: 12px; 
             font-weight: bold;
             border-radius: 50%;
             display: flex;
@@ -265,19 +274,19 @@
             user-select: none;
             touch-action: none;
             transition: background 0.1s;
-            box-shadow: 0 0 10px rgba(0,255,0,0.3); /* Ombre légère */
+            box-shadow: 0 0 10px rgba(0,255,0,0.3); 
         }
         .mobile-button:active {
             background: #00cc00;
         }
         
         #btn-interact {
-            bottom: 110px; /* Position ajustée */
+            bottom: 110px; 
             right: 30px;
         }
 
         #btn-note {
-            bottom: 30px; /* Position ajustée */
+            bottom: 30px; 
             right: 30px;
         }
         
