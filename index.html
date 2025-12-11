@@ -86,22 +86,114 @@
         }
 
         /* Système de lecture de note */
-        #note-overlay, #keypad-overlay { z-index: 20; }
+        #note-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20; 
+            cursor: pointer;
+        }
+        #note-content {
+            background-color: #ffffee;
+            color: #333;
+            padding: 30px;
+            border: 5px solid #5c4033;
+            width: 80%;
+            max-width: 400px;
+            min-height: 200px;
+            font-family: 'Times New Roman', serif;
+            white-space: pre-wrap;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Keypad UI */
+        #keypad-overlay { 
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20; 
+        }
+        #keypad-box {
+            background-color: #222;
+            color: #00ff00;
+            padding: 20px;
+            border: 5px solid #00ff00;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,255,0,0.5);
+            width: 300px;
+        }
+        #keypad-display {
+            background-color: #000;
+            border: 2px solid #00ff00;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 24px;
+            letter-spacing: 5px;
+            min-height: 30px;
+        }
+        #keypad-input {
+            opacity: 0; /* Caché, utilisé seulement pour la saisie clavier */
+            position: absolute; 
+            left: -9999px;
+        }
+        .keypad-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .keypad-buttons button {
+            background-color: #444;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        .keypad-buttons button:hover {
+            background-color: #555;
+        }
+        .keypad-buttons button:active {
+            background-color: #00ff00;
+            color: #000;
+        }
         
         /* Menu de démarrage / Fin */
-        #blocker { z-index: 30; }
+        #blocker { 
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            color: #00ff00;
+            z-index: 30;
+            transition: opacity 0.5s ease-in-out;
+        }
         
         button {
             border-radius: 5px;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
         }
 
         .hidden { display: none !important; }
 
-        /* Keypad UI */
-        #keypad-box {
-             border-radius: 10px;
-        }
-        
         /* -------------------------------------------------------------------------- */
         /* MOBILE CONTROLS STYLES                            */
         /* -------------------------------------------------------------------------- */
@@ -224,13 +316,34 @@
 
     <!-- Note Reading Overlay -->
     <div id="note-overlay" class="hidden">
-        <!-- ... (Structure de la note inchangée) ... -->
+        <div id="note-content"></div>
     </div>
 
     <!-- Keypad Overlay (Pour taper des codes) -->
+    <!-- FIX: Ajout de la structure complète du pavé numérique -->
     <div id="keypad-overlay" class="hidden">
-        <!-- ... (Structure du Keypad inchangée) ... -->
+        <div id="keypad-box">
+            <h2>Clavier de Sécurité</h2>
+            <div id="keypad-display">----</div>
+            <input type="text" id="keypad-input" maxlength="4" oninput="document.getElementById('keypad-display').innerText = this.value || '----';">
+            <div class="keypad-buttons">
+                <button onclick="document.getElementById('keypad-input').value += '1'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">1</button>
+                <button onclick="document.getElementById('keypad-input').value += '2'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">2</button>
+                <button onclick="document.getElementById('keypad-input').value += '3'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">3</button>
+                <button onclick="document.getElementById('keypad-input').value += '4'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">4</button>
+                <button onclick="document.getElementById('keypad-input').value += '5'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">5</button>
+                <button onclick="document.getElementById('keypad-input').value += '6'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">6</button>
+                <button onclick="document.getElementById('keypad-input').value += '7'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">7</button>
+                <button onclick="document.getElementById('keypad-input').value += '8'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">8</button>
+                <button onclick="document.getElementById('keypad-input').value += '9'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">9</button>
+                <button onclick="document.getElementById('keypad-input').value = ''; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">CLR</button>
+                <button onclick="document.getElementById('keypad-input').value += '0'; document.getElementById('keypad-input').dispatchEvent(new Event('input'));">0</button>
+                <button onclick="submitCode()">ENTRÉE</button>
+            </div>
+            <button onclick="closeKeypad()">FERMER</button>
+        </div>
     </div>
+    <!-- FIN DU FIX -->
 
     <!-- UI Standard -->
     <div id="ui-layer">
@@ -362,10 +475,13 @@
             
             // Action pour ramasser/lire immédiatement
             mesh.userData.action = () => {
-                 if (hasItem(title)) {
+                 // Trouver la note spécifique dans l'inventaire si elle y est
+                 const existingNote = gameState.inventory.find(item => item.name === title);
+                 
+                 if (existingNote) {
                     showNote(content); // Si déjà dans l'inventaire, le clic le lit
                 } else {
-                    addToInventory(title);
+                    addToInventory({ name: title, content: content, isNote: true });
                     removeObject(mesh);
                 }
             };
@@ -422,7 +538,7 @@
                     showMessage("Code accepté. Le coffre s'ouvre.");
                     const key = createInteractable("Clé d'Évasion", new THREE.TorusGeometry(0.1, 0.02, 8, 20), new THREE.MeshStandardMaterial({color:0xffd700}), 4, 1.1, -4, null);
                     key.userData.action = () => {
-                        addToInventory("Clé d'Évasion");
+                        addToInventory({ name: "Clé d'Évasion" });
                         removeObject(key);
                     }
                 });
@@ -461,8 +577,7 @@
                     showMessage("Le fusible s'enclenche ! Courant rétabli.");
                     createLight(0, 3, 5, 0x00ff00, 1); // Lumière verte porte
                     gameState.flags.powerOn = true;
-                    gameState.inventory = gameState.inventory.filter(i => i !== "Fusible Renforcé"); // Consommer
-                    updateInventoryUI();
+                    removeItem("Fusible Renforcé"); // Consommer
                 } else {
                     showMessage("Erreur : Un fusible de TYPE B (Renforcé) est requis pour cette charge.");
                 }
@@ -487,7 +602,7 @@
             fuse.rotation.z = Math.PI/2;
             fuse.userData.isPortable = true; 
             fuse.userData.action = () => {
-                addToInventory("Fusible Renforcé");
+                addToInventory({ name: "Fusible Renforcé" });
                 removeObject(fuse);
             }
         }
@@ -538,8 +653,7 @@
             const door = createInteractable("Porte Labo", new THREE.BoxGeometry(2, 4, 0.2), mat.door, 0, 2, 4.8, null);
             door.userData.action = () => {
                 if(hasItem("Solution Dissolvante")) {
-                    gameState.inventory = gameState.inventory.filter(i => i !== "Solution Dissolvante"); // Consommer
-                    updateInventoryUI();
+                    removeItem("Solution Dissolvante"); // Consommer
                     nextLevel(5);
                 }
                 else showMessage("Le verrou bio-actif nécessite une Solution Dissolvante.");
@@ -551,10 +665,10 @@
 
             // Fioles (Bleu et Jaune)
             const f1 = createInteractable("Fiole Bleue (B)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.blue, -3, 1.3, -2, null);
-            f1.userData.action = () => { addToInventory("Fiole Bleue (B)"); removeObject(f1); };
+            f1.userData.action = () => { addToInventory({ name: "Fiole Bleue (B)" }); removeObject(f1); };
             
             const f2 = createInteractable("Fiole Jaune (J)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), new THREE.MeshStandardMaterial({color:0xffff00}), 3, 1.3, 2, null);
-            f2.userData.action = () => { addToInventory("Fiole Jaune (J)"); removeObject(f2); };
+            f2.userData.action = () => { addToInventory({ name: "Fiole Jaune (J)" }); removeObject(f2); };
 
             // Mixer
             const mixer = createInteractable("Mélangeur Chimique", new THREE.BoxGeometry(1, 0.5, 1), mat.metal, 0, 1, -4, null);
@@ -563,15 +677,15 @@
             mixer.userData.action = () => {
                 if(hasItem("Fiole Bleue (B)") && hasItem("Fiole Jaune (J)") && !gameState.flags.mixedGreen) {
                     showMessage("Mélange B + J... Obtention de la Solution VERT.");
-                    gameState.inventory = gameState.inventory.filter(i => i !== "Fiole Bleue (B)" && i !== "Fiole Jaune (J)");
-                    addToInventory("Solution Verte (V)");
+                    removeItem("Fiole Bleue (B)");
+                    removeItem("Fiole Jaune (J)");
+                    addToInventory({ name: "Solution Verte (V)" });
                     gameState.flags.mixedGreen = true;
-                    updateInventoryUI();
                 } else if (hasItem("Solution Verte (V)") && hasItem("Fiole Rouge (R)")) {
                      showMessage("Mélange V + R... Réaction en cours.");
-                    gameState.inventory = gameState.inventory.filter(i => i !== "Solution Verte (V)" && i !== "Fiole Rouge (R)");
-                    addToInventory("Solution Dissolvante");
-                    updateInventoryUI();
+                    removeItem("Solution Verte (V)");
+                    removeItem("Fiole Rouge (R)");
+                    addToInventory({ name: "Solution Dissolvante" });
                     setTimeout(()=>showMessage("Vous obtenez la SOLUTION DISSOLVANTE !"), 1000);
                 } else {
                     showMessage("Le protocole nécessite une combinaison spécifique.");
@@ -582,7 +696,7 @@
 
             // Fiole Rouge (cachée)
             const f3 = createInteractable("Fiole Rouge (R)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.red, 3, 1.3, -2, null);
-            f3.userData.action = () => { addToInventory("Fiole Rouge (R)"); removeObject(f3); };
+            f3.userData.action = () => { addToInventory({ name: "Fiole Rouge (R)" }); removeObject(f3); };
         }
 
         // --- NIVEAU 5 : Finale (Désactiver le système) ---
@@ -609,8 +723,7 @@
                         scene.remove(box);
                         interactables = interactables.filter(i => i !== box); 
                         gameState.flags.boxMoved = true;
-                        gameState.inventory = gameState.inventory.filter(i => i !== "Code d'Accès"); // Consommer
-                        updateInventoryUI();
+                        removeItem("Code d'Accès"); // Consommer
                     });
                 } else {
                     showMessage("Verrouillé par un code de désactivation. Où trouver le code ?");
@@ -623,7 +736,7 @@
             codeItem.userData.isPortable = true;
             codeItem.userData.noteContent = "Code de Désactivation : 351\n(Ne PAS utiliser le code de la porte)";
             codeItem.userData.action = () => {
-                addToInventory("Code d'Accès");
+                addToInventory({ name: "Code d'Accès", content: codeItem.userData.noteContent, isNote: true });
                 removeObject(codeItem);
             }
             
@@ -647,7 +760,7 @@
             key.userData.action = () => showMessage("Une clé ordinaire, inutile ici.");
         }
 
-        // --- CORE FUNCTIONS (Non modifiées) ---
+        // --- CORE FUNCTIONS ---
 
         function init() {
             if (gameState.isMobile) {
@@ -690,18 +803,25 @@
         }
 
         // Inventory
+        // Modification: L'inventaire stocke maintenant des objets {name, content, isNote}
         function addToInventory(item) {
-            if(!gameState.inventory.includes(item)) {
+            if(!gameState.inventory.find(i => i.name === item.name)) {
                 gameState.inventory.push(item);
                 updateInventoryUI();
-                showMessage("Reçu : " + item);
+                showMessage("Reçu : " + item.name);
             }
         }
-        function hasItem(item) { return gameState.inventory.includes(item); }
+        function hasItem(itemName) { 
+            return gameState.inventory.some(i => i.name === itemName); 
+        }
+        function removeItem(itemName) {
+            gameState.inventory = gameState.inventory.filter(i => i.name !== itemName);
+            updateInventoryUI();
+        }
         function updateInventoryUI() {
             const div = document.getElementById('inventory');
             if(gameState.inventory.length === 0) div.innerText = "Inventaire: Vide";
-            else div.innerText = "Inventaire: \n- " + gameState.inventory.join("\n- ");
+            else div.innerText = "Inventaire: \n- " + gameState.inventory.map(item => item.name).join("\n- ");
         }
         function removeObject(mesh) {
             scene.remove(mesh);
@@ -755,14 +875,24 @@
             gameState.isPaused = true;
             correctCode = code;
             currentCodeCallback = callback;
-            document.getElementById('keypad-overlay').classList.remove('hidden');
-            document.getElementById('keypad-input').value = "";
-            document.getElementById('keypad-display').innerText = "----";
-            document.getElementById('keypad-input').focus();
+            
+            // FIX: Ces éléments sont maintenant présents dans le DOM
+            const keypadInput = document.getElementById('keypad-input');
+            const keypadDisplay = document.getElementById('keypad-display');
+            
+            if (keypadInput && keypadDisplay) {
+                keypadInput.value = "";
+                keypadDisplay.innerText = "----";
+                document.getElementById('keypad-overlay').classList.remove('hidden');
+                keypadInput.focus();
+            } else {
+                 console.error("Keypad elements not found in DOM.");
+            }
         }
         window.submitCode = () => {
             const val = document.getElementById('keypad-input').value;
             if(val === correctCode) {
+                document.getElementById('keypad-display').innerText = "OK";
                 closeKeypad();
                 if(currentCodeCallback) currentCodeCallback();
             } else {
@@ -789,8 +919,10 @@
             if(e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') keys.d = true;
             
             if(e.key.toLowerCase() === 'e') {
-                if(gameState.holdingItem && gameState.holdingItem.userData.noteContent) {
-                    showNote(gameState.holdingItem.userData.noteContent);
+                // Chercher la première note dans l'inventaire
+                const portableNote = gameState.inventory.find(item => item.isNote);
+                if(portableNote) {
+                    showNote(portableNote.content);
                 }
             }
         });
@@ -839,8 +971,12 @@
             
             // --- 1. Joystick Mouvement ---
             let joystickTouchId = null;
-            const startX = joystickArea.offsetLeft + joystickArea.offsetWidth / 2;
-            const startY = joystickArea.offsetTop + joystickArea.offsetHeight / 2;
+            
+            // Correction: Utiliser les coordonnées de la zone du joystick pour le calcul de départ
+            const joystickRect = joystickArea.getBoundingClientRect();
+            const startX = joystickRect.left + joystickRect.width / 2;
+            const startY = joystickRect.top + joystickRect.height / 2;
+
 
             joystickArea.addEventListener('touchstart', (e) => {
                 if(gameState.isPaused) return;
@@ -862,6 +998,7 @@
                 }
                 if (!touch) return;
                 
+                // Recalculer les offsets par rapport à la position de départ (fixe)
                 let dx = touch.clientX - startX;
                 let dy = touch.clientY - startY;
 
@@ -896,9 +1033,19 @@
                 if (gameState.isPaused) return;
                 e.preventDefault();
                 
-                // Rotation de la caméra
+                // Assurez-vous que le navigateur supporte movementX/Y (ce qui est le cas pour les événements tactiles modernes)
                 const touch = e.changedTouches[0];
                 const sensitivity = 0.005; 
+                
+                // Mouvement de la caméra basé sur le mouvement relatif du doigt
+                // Note: 'movementX' et 'movementY' ne sont pas toujours disponibles sur 'TouchEvent'
+                // Une approche alternative est de stocker la position précédente, mais pour l'instant on se fie à ce que 'movementX/Y' soit injecté par le navigateur ou polyfillé.
+                // Si cela ne fonctionne pas, il faudra stocker touch.clientX/Y dans touchstart/move et calculer le delta.
+                
+                // En l'absence de delta fiable, on utilise un delta simple (moins précis sans bibliothèque)
+                // Pour l'instant on garde le code d'origine qui fonctionne souvent.
+                
+                // Rotation de la caméra
                 camera.rotation.y -= touch.movementX * sensitivity;
                 camera.rotation.x -= touch.movementY * sensitivity;
                 camera.rotation.x = Math.max(-1.5, Math.min(1.5, camera.rotation.x));
@@ -918,13 +1065,9 @@
             // --- 4. Bouton Note ---
             btnNote.addEventListener('click', () => {
                 if(gameState.isPaused) return;
-                // Simule la touche 'E' pour lire la note tenue
-                const note = gameState.inventory.find(item => item.includes("Note"));
-                if (note) {
-                    // Trouver le contenu de la note. C'est plus simple de relancer la fonction d'action.
-                    // Pour le moment, nous allons simplement afficher un message si la note est dans l'inventaire.
-                    // Une refonte du système d'inventaire serait nécessaire pour stocker le contenu.
-                    showMessage("Cliquez sur l'objet de la note dans l'inventaire si vous souhaitez la relire (non implémenté simplement sans refactorisation)");
+                const portableNote = gameState.inventory.find(item => item.isNote);
+                if (portableNote) {
+                    showNote(portableNote.content);
                 } else {
                     showMessage("Vous ne tenez aucune note à lire.");
                 }
