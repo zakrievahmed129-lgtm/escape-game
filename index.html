@@ -195,7 +195,7 @@
         .hidden { display: none !important; }
 
         /* -------------------------------------------------------------------------- */
-        /* MOBILE CONTROLS STYLES                            */
+        /* MOBILE CONTROLS STYLES - MISE À JOUR POUR PETITS BOUTONS/JOYSTICK           */
         /* -------------------------------------------------------------------------- */
         #mobile-controls {
             position: absolute;
@@ -209,12 +209,12 @@
         /* Mouvement Joystick (Gauche) */
         #joystick-area {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 150px;
-            height: 150px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(0, 255, 0, 0.5);
+            bottom: 30px; /* Moins bas */
+            left: 30px;  /* Moins à gauche */
+            width: 120px; /* Taille réduite */
+            height: 120px; /* Taille réduite */
+            background: rgba(0, 0, 0, 0.4); /* Plus transparent */
+            border: 1px solid rgba(0, 255, 0, 0.5); 
             border-radius: 50%;
             pointer-events: auto;
             display: flex;
@@ -224,9 +224,9 @@
         }
 
         #joystick-handle {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 255, 0, 0.8);
+            width: 50px; /* Handle réduit */
+            height: 50px; /* Handle réduit */
+            background: rgba(0, 255, 0, 0.7);
             border-radius: 50%;
             transform: translate(0, 0);
         }
@@ -236,7 +236,7 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 50%;
+            width: 70%; /* Augmenter la zone de regard */
             height: 100%;
             pointer-events: auto;
             /* Visuellement transparent, mais actif */
@@ -245,12 +245,12 @@
         /* Boutons d'interaction */
         .mobile-button {
             position: absolute;
-            width: 70px;
-            height: 70px;
+            width: 60px; /* Boutons réduits */
+            height: 60px; /* Boutons réduits */
             background: rgba(0, 255, 0, 0.6);
             border: 2px solid #00ff00;
             color: #000;
-            font-size: 14px;
+            font-size: 12px; /* Texte plus petit */
             font-weight: bold;
             border-radius: 50%;
             display: flex;
@@ -260,19 +260,20 @@
             user-select: none;
             touch-action: none;
             transition: background 0.1s;
+            box-shadow: 0 0 10px rgba(0,255,0,0.3); /* Ombre légère */
         }
         .mobile-button:active {
             background: #00cc00;
         }
         
         #btn-interact {
-            bottom: 150px;
-            right: 20px;
+            bottom: 110px; /* Position ajustée */
+            right: 30px;
         }
 
         #btn-note {
-            bottom: 70px;
-            right: 100px;
+            bottom: 30px; /* Position ajustée */
+            right: 30px;
         }
         
         /* Classes spécifiques pour masquer les éléments PC sur mobile et inversement */
@@ -342,7 +343,6 @@
             <button onclick="closeKeypad()">FERMER</button>
         </div>
     </div>
-    <!-- FIN DU FIX -->
 
     <!-- UI Standard -->
     <div id="ui-layer">
@@ -386,7 +386,7 @@
             joystick: {
                 active: false,
                 vector: new THREE.Vector2(0, 0), // (x, z) movement
-                maxDistance: 75, // Rayon max du joystick
+                maxDistance: 60, // Rayon max du joystick (réduit)
             },
             
             // Détection Mobile
@@ -425,7 +425,6 @@
         let colliders = [];
         let currentLevelObjects = [];
         
-        // HAUTEUR DU JOUEUR MODIFIÉE (Ancienne: 1.7)
         const PLAYER_HEIGHT = 3.0; 
 
         function clearLevel() {
@@ -433,13 +432,13 @@
             currentLevelObjects = [];
             interactables = [];
             colliders = [];
-            gameState.flags = {}; // Reset flags par niveau (ou garder si besoin persistence)
+            gameState.flags = {}; 
             gameState.holdingItem = null;
             gameState.inventory = [];
             updateInventoryUI();
         }
 
-        // --- BUILDER HELPERS (Les fonctions de construction ne sont pas modifiées) ---
+        // --- BUILDER HELPERS (Les fonctions de construction restent les mêmes) ---
         function addMesh(mesh, isCollidable=true) {
             scene.add(mesh);
             currentLevelObjects.push(mesh);
@@ -461,8 +460,8 @@
             mesh.castShadow = true;
             mesh.userData = { name: name, action: action, isInteractable: true, ...userData };
             scene.add(mesh);
-            currentLevelObjects.push(mesh);
             interactables.push(mesh);
+            currentLevelObjects.push(mesh);
             return mesh;
         }
 
@@ -472,13 +471,11 @@
             mesh.userData.isPortable = true; 
             mesh.userData.noteContent = content; 
             
-            // Action pour ramasser/lire immédiatement
             mesh.userData.action = () => {
-                 // Trouver la note spécifique dans l'inventaire si elle y est
                  const existingNote = gameState.inventory.find(item => item.name === title);
                  
                  if (existingNote) {
-                    showNote(content); // Si déjà dans l'inventaire, le clic le lit
+                    showNote(content); 
                 } else {
                     addToInventory({ name: title, content: content, isNote: true });
                     removeObject(mesh);
@@ -500,31 +497,27 @@
             currentLevelObjects.push(b);
         }
 
-        // ================= LEVELS DIFFICILES (Inchagngés) =================
+        // ================= LEVELS (Inchagngés) =================
 
-        // --- NIVEAU 1 : La Cellule (Code caché + clé) ---
         function loadLevel1() {
             gameState.level = 1;
             createLight(0, 4, 0, 0xffaa88, 0.8);
 
-            // Room Box
-            createWall(0, 0, 0, 10, 0.2, 10, mat.floor); // Sol
-            createWall(0, 5, 0, 10, 0.2, 10, mat.wall); // Plafond
-            createWall(0, 2.5, -5, 10, 5, 0.5, mat.wall); // Nord
-            createWall(-5, 2.5, 0, 0.5, 5, 10, mat.wall); // Ouest
-            createWall(5, 2.5, 0, 0.5, 5, 10, mat.wall); // Est
-            createWall(0, 2.5, 5, 10, 5, 0.5, mat.wall); // Sud (Porte)
+            createWall(0, 0, 0, 10, 0.2, 10, mat.floor); 
+            createWall(0, 5, 0, 10, 0.2, 10, mat.wall); 
+            createWall(0, 2.5, -5, 10, 5, 0.5, mat.wall); 
+            createWall(-5, 2.5, 0, 0.5, 5, 10, mat.wall); 
+            createWall(5, 2.5, 0, 0.5, 5, 10, mat.wall); 
+            createWall(0, 2.5, 5, 10, 5, 0.5, mat.wall); 
 
-            // Décor
-            const bed = createWall(-3.5, 1.5, -3, 2, 3, 3.5, new THREE.MeshStandardMaterial({color:0x333344})); 
+            createWall(-3.5, 1.5, -3, 2, 3, 3.5, new THREE.MeshStandardMaterial({color:0x333344})); 
             
-            // Énigme 1 (DIFFICILE)
             createNote(-3.5, 1.5, -2, "La clé est derrière la seule image qui vous manque.\nLe code est la date où la SIMULATION A COMMENCÉ (2025).", "Note à moitié déchirée");
             
             const painting = createInteractable("Tableau Ancien", new THREE.BoxGeometry(1.5, 1.5, 0.1), mat.wood, 0, 2.5, -4.7, null);
             painting.userData.action = () => {
-                painting.rotation.z = 0.5; // Penche le tableau
-                showMessage("Il n'y a rien. L'image manquante... Est-ce un indice ?"); // Pas de code direct!
+                painting.rotation.z = 0.5; 
+                showMessage("Il n'y a rien. L'image manquante... Est-ce un indice ?"); 
                 painting.userData.name = "Tableau (Rien derrière)";
             };
 
@@ -554,49 +547,42 @@
             };
         }
 
-        // --- NIVEAU 2 : Maintenance (Fusibles) ---
         function loadLevel2() {
             gameState.level = 2;
             createLight(0, 3, 0, 0xaaaaaa, 0.5);
 
-            // Couloir
             createWall(0, 0, 0, 6, 0.2, 12, mat.floor);
             createWall(-3, 2.5, 0, 0.5, 5, 12, mat.wall);
             createWall(3, 2.5, 0, 0.5, 5, 12, mat.wall);
-            createWall(0, 2.5, -6, 6, 5, 0.5, mat.wall); // Fond
-            createWall(0, 2.5, 6, 6, 5, 0.5, mat.door); // Porte fin (nécessite fusible)
+            createWall(0, 2.5, -6, 6, 5, 0.5, mat.wall); 
+            createWall(0, 2.5, 6, 6, 5, 0.5, mat.door); 
 
-            // Objets
-            createWall(-2, 1, -4, 1, 2, 1, mat.metal); // Armoire elec
+            createWall(-2, 1, -4, 1, 2, 1, mat.metal); 
 
-            // Enigme: Fusible manquant
             const fuseBox = createInteractable("Boite à fusibles endommagée", new THREE.BoxGeometry(0.5, 0.8, 0.2), mat.metal, -1.9, 1.5, -3.4, null);
             fuseBox.userData.action = () => {
                 if(hasItem("Fusible Renforcé")) {
                     showMessage("Le fusible s'enclenche ! Courant rétabli.");
-                    createLight(0, 3, 5, 0x00ff00, 1); // Lumière verte porte
+                    createLight(0, 3, 5, 0x00ff00, 1); 
                     gameState.flags.powerOn = true;
-                    removeItem("Fusible Renforcé"); // Consommer
+                    removeItem("Fusible Renforcé"); 
                 } else {
                     showMessage("Erreur : Un fusible de TYPE B (Renforcé) est requis pour cette charge.");
                 }
             };
 
-            // Porte sortie
             const door = createInteractable("Porte Électronique", new THREE.BoxGeometry(2.5, 4, 0.2), mat.door, 0, 2, 5.8, null);
             door.userData.action = () => {
                 if(gameState.flags.powerOn) nextLevel(3);
                 else showMessage("La porte est verrouillée sans alimentation.");
             };
 
-            // Indices / Objets cachés
             createNote(2, 0.1, 0, "Dernier emplacement connu du Fusible B :\nSous l'unique source de lumière naturelle de ce couloir (un petit conduit d'aération).", "Rapport incident - Maintenance");
 
             createInteractable("Grille de Ventilation", new THREE.BoxGeometry(1, 0.1, 1), mat.metal, 0, 4.9, 3, ()=>showMessage("Trop haut pour atteindre."));
             
             createWall(0, 1, -5.5, 4, 0.1, 1, mat.wood); 
             
-            // Fusible (maintenant caché dans un coin sombre)
             const fuse = createInteractable("Fusible Renforcé", new THREE.CylinderGeometry(0.05, 0.05, 0.3), mat.red, 2.5, 0.1, 3.5, null);
             fuse.rotation.z = Math.PI/2;
             fuse.userData.isPortable = true; 
@@ -606,38 +592,31 @@
             }
         }
 
-        // --- NIVEAU 3 : Bureau (Couleurs / Séquence) ---
         function loadLevel3() {
             gameState.level = 3;
             createLight(0, 4, 0, 0xffffff, 0.8);
             
-            // Pièce carrée
             createWall(0, 0, 0, 8, 0.2, 8, mat.floor);
             createWall(0, 2.5, -4, 8, 5, 0.5, mat.wall);
             createWall(-4, 2.5, 0, 0.5, 5, 8, mat.wall);
             createWall(4, 2.5, 0, 0.5, 5, 8, mat.wall);
-            createWall(0, 2.5, 4, 8, 5, 0.5, mat.door); // Porte code couleur
+            createWall(0, 2.5, 4, 8, 5, 0.5, mat.door); 
 
-            // 3 Cubes de couleur (Indices)
             createInteractable("Cube CYAN (1)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0x00ffff}), -2, 0.5, -2, ()=>showMessage("C'est le premier cube de la séquence."));
             createInteractable("Cube MAGENTA (2)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xff00ff}), 0, 0.5, -2, ()=>showMessage("C'est le deuxième cube."));
             createInteractable("Cube JAUNE (3)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xffff00}), 2, 0.5, -2, ()=>showMessage("C'est le troisième cube."));
 
-            // Bureau
             createWall(0, 1, 0, 4, 0.1, 2, mat.wood);
 
-            // Note énigme (DIFFICILE)
-            const COLOR_CODE = "475"; // C Y A N -> 4, M A G E N T A -> 7, J A U N E -> 5
+            const COLOR_CODE = "475"; 
             createNote(0, 1.1, 0, "Règle de Séquence :\nLe code n'est pas l'ordre, mais le COMPTE.\nComptez le nombre de lettres de chaque couleur.\n(1) Cyan, (2) Magenta, (3) Jaune.", "Post-it sur le bureau");
 
-            // Clavier porte
             const door = createInteractable("Porte Sécurisée", new THREE.BoxGeometry(2, 4, 0.2), mat.door, 0, 2, 3.8, null);
             door.userData.action = () => {
                 openKeypad(COLOR_CODE, () => nextLevel(4));
             };
         }
 
-        // --- NIVEAU 4 : Labo (Chimie / Chercher + Manipulation) ---
         function loadLevel4() {
             gameState.level = 4;
             createLight(0, 4, 0, 0xccffcc, 0.8);
@@ -648,30 +627,26 @@
             createWall(5, 2.5, 0, 0.5, 5, 10, mat.wall);
             createWall(0, 2.5, 5, 10, 5, 0.5, mat.wall);
 
-            // Porte
             const door = createInteractable("Porte Labo", new THREE.BoxGeometry(2, 4, 0.2), mat.door, 0, 2, 4.8, null);
             door.userData.action = () => {
                 if(hasItem("Solution Dissolvante")) {
-                    removeItem("Solution Dissolvante"); // Consommer
+                    removeItem("Solution Dissolvante"); 
                     nextLevel(5);
                 }
                 else showMessage("Le verrou bio-actif nécessite une Solution Dissolvante.");
             };
 
-            // Paillasses
             createWall(-3, 1, 0, 2, 0.1, 8, mat.metal);
             createWall(3, 1, 0, 2, 0.1, 8, mat.metal);
 
-            // Fioles (Bleu et Jaune)
             const f1 = createInteractable("Fiole Bleue (B)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.blue, -3, 1.3, -2, null);
             f1.userData.action = () => { addToInventory({ name: "Fiole Bleue (B)" }); removeObject(f1); };
             
             const f2 = createInteractable("Fiole Jaune (J)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), new THREE.MeshStandardMaterial({color:0xffff00}), 3, 1.3, 2, null);
             f2.userData.action = () => { addToInventory({ name: "Fiole Jaune (J)" }); removeObject(f2); };
 
-            // Mixer
             const mixer = createInteractable("Mélangeur Chimique", new THREE.BoxGeometry(1, 0.5, 1), mat.metal, 0, 1, -4, null);
-            createWall(0, 0.5, -4, 2, 1, 1, mat.wood); // Table mixer
+            createWall(0, 0.5, -4, 2, 1, 1, mat.wood); 
             
             mixer.userData.action = () => {
                 if(hasItem("Fiole Bleue (B)") && hasItem("Fiole Jaune (J)") && !gameState.flags.mixedGreen) {
@@ -693,26 +668,21 @@
             
             createNote(-3, 1.1, 2, "Protocole : Le Bio-verrou réagit à la Solution Dissolvante (VIOLET).\nFormule: Bleu + Jaune = Vert. Vert + Rouge = Violet (Dissolvant).\n[Le Rouge est caché sur la paillasse de droite.]", "Protocole Labo");
 
-            // Fiole Rouge (cachée)
             const f3 = createInteractable("Fiole Rouge (R)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.red, 3, 1.3, -2, null);
             f3.userData.action = () => { addToInventory({ name: "Fiole Rouge (R)" }); removeObject(f3); };
         }
 
-        // --- NIVEAU 5 : Finale (Désactiver le système) ---
         function loadLevel5() {
             gameState.level = 5;
             createLight(0, 5, 0, 0xffffff, 1);
             
-            // Toit ou grand hangar
             createWall(0, 0, 0, 15, 0.2, 15, mat.floor);
             createWall(0, 3, -7.5, 15, 6, 0.5, mat.wall);
-            createWall(0, 3, 7.5, 15, 6, 0.5, mat.door); // Grande porte sortie
+            createWall(0, 3, 7.5, 15, 6, 0.5, mat.door); 
 
-            // Une grosse caisse qui bloque la porte
             const box = createInteractable("Caisse lourde", new THREE.BoxGeometry(2, 2, 2), mat.wood, 0, 1, 6, null);
             box.userData.action = () => showMessage("Trop lourd... Il faut désactiver l'alimentation de la zone.");
             
-            // Tableau Électrique (nouveau point d'interaction)
             const panel = createInteractable("Panneau Électrique Principal", new THREE.BoxGeometry(0.5, 1.5, 0.2), mat.metal, -6.8, 2, 0, null);
             panel.userData.action = () => {
                 if(hasItem("Code d'Accès")) {
@@ -722,14 +692,13 @@
                         scene.remove(box);
                         interactables = interactables.filter(i => i !== box); 
                         gameState.flags.boxMoved = true;
-                        removeItem("Code d'Accès"); // Consommer
+                        removeItem("Code d'Accès"); 
                     });
                 } else {
                     showMessage("Verrouillé par un code de désactivation. Où trouver le code ?");
                 }
             };
             
-            // Code d'Accès (devient l'objet portable)
             const codeItem = createInteractable("Code d'Accès", new THREE.PlaneGeometry(0.4, 0.3), mat.paper, 5, 2.5, -5, null);
             codeItem.rotation.x = -Math.PI/2;
             codeItem.userData.isPortable = true;
@@ -739,22 +708,18 @@
                 removeObject(codeItem);
             }
             
-            // Porte Finale
             const exit = createInteractable("SORTIE", new THREE.BoxGeometry(4, 5, 0.2), new THREE.MeshStandardMaterial({color:0xffffff, emissive:0x555555}), 0, 2.5, 7.5, null);
             exit.userData.action = () => {
                 if(gameState.flags.boxMoved) {
-                    // Utilisation d'un modal ou message box au lieu d'alert()
                     document.getElementById('blocker').classList.remove('hidden');
                     document.getElementById('blocker').innerHTML = `<h1 style="font-size: 60px; color:#00ff00;">SIMULATION TERMINÉE</h1><p style="font-size: 30px; color:#ffffff;">FÉLICITATIONS ! VOUS ÊTES LIBRE !</p><button onclick="location.reload()">REJOUER</button>`;
                     gameState.isPaused = true;
-                    // Retirer le pointer lock pour afficher le menu correctement
                     if (document.exitPointerLock) document.exitPointerLock(); 
                 } else {
                     showMessage("Bloqué par la caisse.");
                 }
             };
             
-            // Fausse piste pour la clé
             const key = createInteractable("Clé de contact (Fausse Piste)", new THREE.BoxGeometry(0.2, 0.1, 0.5), mat.red, 5, 0.1, -5, null);
             key.userData.action = () => showMessage("Une clé ordinaire, inutile ici.");
         }
@@ -762,13 +727,11 @@
         // --- CORE FUNCTIONS ---
 
         function init() {
-            // Unifier le comportement du bouton de jeu pour PC et Mobile
             document.getElementById('play-btn').addEventListener('click', () => {
                 loadLevel1();
                 document.getElementById('blocker').classList.add('hidden');
                 gameState.isPaused = false;
                 
-                // Activer le Pointer Lock UNIQUEMENT sur PC
                 if (!gameState.isMobile && document.body.requestPointerLock) {
                     document.body.requestPointerLock();
                 }
@@ -776,12 +739,10 @@
             
             updateInventoryUI();
             
-            // Position initiale de la caméra augmentée
             camera.position.set(0, PLAYER_HEIGHT, 0); 
             
             setupMobileControls();
             
-            // Assurer que le blocker est visible au début (par défaut)
             document.getElementById('blocker').classList.remove('hidden');
             gameState.isPaused = true;
         }
@@ -802,8 +763,6 @@
             }, 1000);
         }
 
-        // Inventory
-        // Modification: L'inventaire stocke maintenant des objets {name, content, isNote}
         function addToInventory(item) {
             if(!gameState.inventory.find(i => i.name === item.name)) {
                 gameState.inventory.push(item);
@@ -826,7 +785,6 @@
         function removeObject(mesh) {
             scene.remove(mesh);
             interactables = interactables.filter(i => i !== mesh);
-            // Si on le tenait
             if(gameState.holdingItem === mesh) {
                 gameState.holdingItem = null;
             }
@@ -854,7 +812,7 @@
         }
 
         function showNote(content) {
-            if(document.exitPointerLock) document.exitPointerLock(); // Désactiver le Pointer Lock sur PC
+            if(document.exitPointerLock) document.exitPointerLock(); 
             gameState.isPaused = true;
             document.getElementById('note-content').innerText = content;
             document.getElementById('note-overlay').classList.remove('hidden');
@@ -863,7 +821,6 @@
         document.getElementById('note-overlay').addEventListener('click', () => {
             document.getElementById('note-overlay').classList.add('hidden');
             gameState.isPaused = false;
-            // Réactiver le Pointer Lock si c'est un PC (pas un mobile)
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         });
 
@@ -902,7 +859,6 @@
         window.closeKeypad = () => {
             document.getElementById('keypad-overlay').classList.add('hidden');
             gameState.isPaused = false;
-            // Réactiver le Pointer Lock si c'est un PC (pas un mobile)
             if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
         };
 
@@ -912,8 +868,8 @@
         const keys = { w:false, a:false, s:false, d:false };
         
         document.addEventListener('keydown', e => {
-            if(gameState.isMobile) return; // Ignorer sur mobile
-            if(gameState.isPaused) return; // Ignorer si en pause
+            if(gameState.isMobile) return; 
+            if(gameState.isPaused) return; 
 
             if(e.key.toLowerCase() === 'z' || e.key === 'ArrowUp') keys.w = true;
             if(e.key.toLowerCase() === 'q' || e.key === 'ArrowLeft') keys.a = true;
@@ -921,7 +877,6 @@
             if(e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') keys.d = true;
             
             if(e.key.toLowerCase() === 'e') {
-                // Chercher la première note dans l'inventaire
                 const portableNote = gameState.inventory.find(item => item.isNote);
                 if(portableNote) {
                     showNote(portableNote.content);
@@ -929,7 +884,7 @@
             }
         });
         document.addEventListener('keyup', e => {
-            if(gameState.isMobile) return; // Ignorer sur mobile
+            if(gameState.isMobile) return; 
             if(e.key.toLowerCase() === 'z' || e.key === 'ArrowUp') keys.w = false;
             if(e.key.toLowerCase() === 'q' || e.key === 'ArrowLeft') keys.a = false;
             if(e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'arrowdown') keys.s = false;
@@ -937,22 +892,19 @@
         });
 
         document.addEventListener('mousedown', e => {
-            if(gameState.isMobile) return; // Ignorer sur mobile
+            if(gameState.isMobile) return; 
             if(gameState.isPaused || document.pointerLockElement !== document.body) return;
 
-            if(e.button === 0) { // Left Click (Interact/Pick up)
+            if(e.button === 0) { 
                 const obj = getInteractable();
                 if(obj) {
                     if(obj.userData.action) obj.userData.action();
                 }
             }
-            if(e.button === 2) { // Right Click (Drop - non implémenté pour l'instant)
-                // if(gameState.holdingItem) togglePickup(null);
-            }
         });
 
         document.addEventListener('mousemove', e => {
-            if(gameState.isMobile) return; // Ignorer sur mobile
+            if(gameState.isMobile) return; 
             if(gameState.isPaused || document.pointerLockElement !== document.body) return;
             camera.rotation.y -= e.movementX * 0.002;
             camera.rotation.x -= e.movementY * 0.002;
@@ -973,12 +925,9 @@
             
             // --- 1. Joystick Mouvement ---
             let joystickTouchId = null;
-            
-            // Correction: Utiliser les coordonnées de la zone du joystick pour le calcul de départ
             const joystickRect = joystickArea.getBoundingClientRect();
             const startX = joystickRect.left + joystickRect.width / 2;
             const startY = joystickRect.top + joystickRect.height / 2;
-
 
             joystickArea.addEventListener('touchstart', (e) => {
                 if(gameState.isPaused) return;
@@ -1000,7 +949,6 @@
                 }
                 if (!touch) return;
                 
-                // Recalculer les offsets par rapport à la position de départ (fixe)
                 let dx = touch.clientX - startX;
                 let dy = touch.clientY - startY;
 
@@ -1012,12 +960,10 @@
                     dy *= max / distance;
                 }
 
-                // Déplacer le handle
                 joystickHandle.style.transform = `translate(${dx}px, ${dy}px)`;
 
-                // Calculer le vecteur de mouvement (normalisé)
-                gameState.joystick.vector.x = dx / max; // Gauche/Droite
-                gameState.joystick.vector.y = -dy / max; // Avant/Arrière (y inversé pour Three.js)
+                gameState.joystick.vector.x = dx / max; 
+                gameState.joystick.vector.y = -dy / max; 
             });
 
             const resetJoystick = () => {
@@ -1031,19 +977,58 @@
             document.addEventListener('touchcancel', resetJoystick);
 
             // --- 2. Rotation Caméra (Look Area) ---
+            let lookTouchId = null;
+            let lastX = 0;
+            let lastY = 0;
+            const sensitivity = 0.005; 
+
+            lookArea.addEventListener('touchstart', (e) => {
+                if (gameState.isPaused) return;
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                lookTouchId = touch.identifier;
+                lastX = touch.clientX;
+                lastY = touch.clientY;
+            }, { passive: false });
+            
             lookArea.addEventListener('touchmove', (e) => {
                 if (gameState.isPaused) return;
                 e.preventDefault();
                 
-                const touch = e.changedTouches[0];
-                const sensitivity = 0.005; 
-                
-                // Rotation de la caméra
-                // NOTE: Les navigateurs mobiles fournissent souvent movementX/Y dans l'objet TouchEvent pour les deltas
-                camera.rotation.y -= (touch.movementX || 0) * sensitivity;
-                camera.rotation.x -= (touch.movementY || 0) * sensitivity;
+                let touch = null;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === lookTouchId) {
+                        touch = e.changedTouches[i];
+                        break;
+                    }
+                }
+                if (!touch) return;
+
+                // Calculer les deltas (l'équivalent de movementX/Y)
+                const dx = touch.clientX - lastX;
+                const dy = touch.clientY - lastY;
+
+                // Appliquer la rotation
+                camera.rotation.y -= dx * sensitivity;
+                camera.rotation.x -= dy * sensitivity;
                 camera.rotation.x = Math.max(-1.5, Math.min(1.5, camera.rotation.x));
+                
+                // Mettre à jour les dernières positions
+                lastX = touch.clientX;
+                lastY = touch.clientY;
             }, { passive: false });
+            
+            lookArea.addEventListener('touchend', (e) => {
+                if (e.changedTouches[0].identifier === lookTouchId) {
+                    lookTouchId = null;
+                }
+            });
+            lookArea.addEventListener('touchcancel', (e) => {
+                if (e.changedTouches[0].identifier === lookTouchId) {
+                    lookTouchId = null;
+                }
+            });
+
 
             // --- 3. Bouton d'Interaction ---
             btnInteract.addEventListener('click', () => {
@@ -1077,31 +1062,25 @@
             // Physics/Movement
             if(document.pointerLockElement === document.body || gameState.isMobile) {
                 const speed = 0.1;
-                const dir = new THREE.Vector3();
                 const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0,1,0), camera.rotation.y);
                 const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0,1,0), camera.rotation.y);
 
                 const nextPos = camera.position.clone();
                 
                 if (gameState.isMobile) {
-                    // Mouvement basé sur le joystick
-                    const jx = gameState.joystick.vector.x; // Gauche/Droite
-                    const jy = gameState.joystick.vector.y; // Avant/Arrière
+                    const jx = gameState.joystick.vector.x; 
+                    const jy = gameState.joystick.vector.y; 
                     
-                    if (jy > 0) nextPos.addScaledVector(forward, speed * jy);
-                    if (jy < 0) nextPos.addScaledVector(forward, speed * jy);
-                    if (jx > 0) nextPos.addScaledVector(right, speed * jx);
-                    if (jx < 0) nextPos.addScaledVector(right, speed * jx);
+                    if (jy !== 0) nextPos.addScaledVector(forward, speed * jy);
+                    if (jx !== 0) nextPos.addScaledVector(right, speed * jx);
 
                 } else {
-                    // Mouvement basé sur le clavier
                     if(keys.w) nextPos.addScaledVector(forward, speed);
                     if(keys.s) nextPos.addScaledVector(forward, -speed);
                     if(keys.d) nextPos.addScaledVector(right, speed);
                     if(keys.a) nextPos.addScaledVector(right, -speed);
                 }
 
-                // Basic collision detection
                 if(Math.abs(nextPos.x) < 20 && Math.abs(nextPos.z) < 20) {
                      camera.position.copy(nextPos);
                 }
@@ -1126,7 +1105,6 @@
 
         // Pointer Lock Events
         document.addEventListener('pointerlockchange', () => {
-            // Cette fonction ne devrait s'exécuter que sur PC
             if(gameState.isMobile) return; 
 
             const blocker = document.getElementById('blocker');
@@ -1134,7 +1112,6 @@
                 blocker.classList.add('hidden');
                 gameState.isPaused = false;
             } else {
-                // Sauf si l'utilisateur est en train de lire une note ou d'utiliser le clavier
                 if(!gameState.isPaused) blocker.classList.remove('hidden'); 
             }
         });
@@ -1148,7 +1125,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        // Empêcher le menu contextuel du clic droit
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
