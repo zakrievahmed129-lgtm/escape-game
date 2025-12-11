@@ -109,7 +109,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Keypad UI - MISE À JOUR POUR ÊTRE TRÈS PETIT */
+        /* Keypad UI - MISE À JOUR : rectangulaire horizontal */
         #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -122,26 +122,26 @@
         #keypad-box {
             background-color: #222;
             color: #00ff00;
-            padding: 10px; /* Réduction drastique du padding */
-            border: 4px solid #00ff00; /* Bordure plus fine */
+            padding: 20px; /* Padding rétabli pour la lisibilité */
+            border: 4px solid #00ff00; 
             border-radius: 8px;
             text-align: center;
             box-shadow: 0 0 15px rgba(0,255,0,0.5);
-            width: 200px; /* Réduction de la largeur */
-            max-width: 90%; 
+            width: 90%; /* Prend de la place horizontalement */
+            max-width: 400px; /* Limite la largeur max, donnant une forme rectangulaire large */
         }
         #keypad-box h2 {
-            font-size: 1.1rem; /* Titre plus petit */
+            font-size: 1.5rem; /* Taille de titre rétablie */
             margin-top: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         #keypad-display {
             background-color: #000;
             border: 2px solid #00ff00;
-            padding: 8px; /* Réduction du padding */
-            margin-bottom: 8px;
-            font-size: 18px; /* Taille de police réduite */
-            letter-spacing: 4px; /* Espacement ajusté */
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 24px;
+            letter-spacing: 5px;
             min-height: 20px;
         }
         #keypad-input {
@@ -155,15 +155,15 @@
         }
         .keypad-buttons {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px; /* Réduction de l'espace entre les boutons */
+            grid-template-columns: repeat(3, 1fr); /* 3 colonnes classiques */
+            gap: 10px; /* Espacement ajusté */
         }
         .keypad-buttons button {
             background-color: #444;
             color: #00ff00;
             border: 1px solid #00ff00;
-            padding: 10px; /* Padding des boutons réduit */
-            font-size: 14px; /* Taille de police des boutons réduite */
+            padding: 15px; /* Grand padding pour le toucher */
+            font-size: 1.2rem; /* Grande police pour la lisibilité */
             cursor: pointer;
             transition: background-color 0.1s;
         }
@@ -175,9 +175,9 @@
             color: #000;
         }
         #keypad-box > button { /* Le bouton FERMER */
-            margin-top: 10px;
-            font-size: 0.9rem;
-            padding: 5px 10px;
+            margin-top: 15px;
+            font-size: 1rem;
+            padding: 10px 20px;
         }
         
         /* Menu de démarrage / Fin */
@@ -402,14 +402,14 @@
             joystick: {
                 active: false,
                 vector: new THREE.Vector2(0, 0), // (x, z) movement
-                maxDistance: 60, // Rayon max du joystick (réduit)
+                maxDistance: 60, 
             },
             
             // Détection Mobile
             isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0),
             
             // Facteur de luminosité mobile
-            mobileLightFactor: 1.5 // Augmente la lumière de 50% sur mobile
+            mobileLightFactor: 1.5 
         };
         
         // Ajustement de l'intensité de la lumière en fonction de l'appareil
@@ -866,7 +866,6 @@
                 keypadInput.value = "";
                 keypadDisplay.innerText = "----";
                 document.getElementById('keypad-overlay').classList.remove('hidden');
-                // N'active pas le focus pour ne pas ouvrir le clavier virtuel
             } else {
                  console.error("Keypad elements not found in DOM.");
             }
