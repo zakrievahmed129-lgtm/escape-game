@@ -18,7 +18,7 @@
             align-items: center;
         }
 
-        /* NOUVEAU Réticule SVG (Visible partout, géré par JS) */
+        /* NOUVEAU Réticule SVG */
         #svg-crosshair-container {
             position: absolute;
             top: 50%;
@@ -28,27 +28,7 @@
             z-index: 15; /* Au-dessus de l'interface utilisateur */
         }
         
-        /* Réticule dynamique CSS (Ancien, masqué sur mobile) */
-        #crosshair {
-            /* Styles de l'ancien crosshair pour PC */
-            width: 8px; height: 8px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            border: 2px solid black;
-            transition: all 0.2s;
-            position: relative; /* Nécessaire pour le centrage dans ui-layer */
-            display: none; /* Masqué par défaut, le SVG prend le relai */
-        }
-        #crosshair.pc-visible {
-             display: block;
-        }
-        #crosshair.active {
-            width: 20px; height: 20px;
-            background-color: transparent;
-            border: 2px solid #00ff00;
-            border-radius: 50%;
-        }
-
+        /* Message d'interaction et indicateurs */
         #interaction-text {
             position: absolute;
             top: 60%;
@@ -99,7 +79,7 @@
         }
 
         /* Système de lecture de note */
-        #note-overlay {
+        #note-overlay, #keypad-overlay { 
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.9);
@@ -120,80 +100,55 @@
             font-family: 'Times New Roman', serif;
             white-space: pre-wrap;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: default;
         }
 
-        /* Keypad UI - Ultra-Optimisation verticale pour mobile */
-        #keypad-overlay { 
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 20; 
-        }
+        /* Keypad UI */
         #keypad-box {
             background-color: #222;
             color: #00ff00;
-            padding: 10px; /* Réduction drastique du padding */
+            padding: 10px; 
             border: 2px solid #00ff00;
             border-radius: 4px;
             text-align: center;
             width: 90%; 
-            max-width: 350px; /* Légère réduction de la largeur max */
+            max-width: 350px; 
+            cursor: default;
         }
-        #keypad-box h2 {
-            font-size: 1.1rem; /* Réduction de la taille de la police */
-            margin-top: 5px;
-            margin-bottom: 5px; /* Réduction de la marge */
-        }
+        #keypad-box h2 { font-size: 1.1rem; margin-top: 5px; margin-bottom: 5px; }
         #keypad-display {
             background-color: #000;
             border: 1px solid #00ff00;
-            padding: 8px; /* Réduction du padding */
-            margin-bottom: 8px; /* Réduction de la marge */
-            font-size: 20px; /* Réduction de la police */
-            letter-spacing: 4px; /* Réduction de l'espacement */
+            padding: 8px; 
+            margin-bottom: 8px; 
+            font-size: 20px; 
+            letter-spacing: 4px; 
             min-height: 18px;
-        }
-        #keypad-input {
-            opacity: 0; 
-            position: absolute; 
-            left: -9999px;
-            ime-mode: inactive; 
-            -webkit-user-select: none;
-            user-select: none;
-            pointer-events: none; 
         }
         .keypad-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr); 
-            gap: 6px; /* Réduction de l'espace entre les boutons */
+            gap: 6px; 
         }
         .keypad-buttons button {
             background-color: #444;
             color: #00ff00;
             border: 1px solid #00ff00;
-            padding: 8px; /* Réduction du padding des boutons */
-            font-size: 1rem; /* Réduction de la taille de la police */
+            padding: 8px; 
+            font-size: 1rem; 
             cursor: pointer;
             transition: background-color 0.1s;
             border-radius: 0;
         }
-        .keypad-buttons button:hover {
-            background-color: #555;
-        }
-        .keypad-buttons button:active {
-            background-color: #00ff00;
-            color: #000;
-        }
+        .keypad-buttons button:hover { background-color: #555; }
+        .keypad-buttons button:active { background-color: #00ff00; color: #000; }
         #keypad-box > button { 
-            margin-top: 8px; /* Réduction de la marge */
-            font-size: 0.9rem; /* Réduction de la police */
-            padding: 6px 10px; /* Réduction du padding du bouton FERMER */
+            margin-top: 8px; 
+            font-size: 0.9rem; 
+            padding: 6px 10px; 
         }
         
-        /* Menu de démarrage / Fin */
+        /* Menu de démarrage / Fin / Pause */
         #blocker { 
             position: absolute;
             width: 100%;
@@ -218,12 +173,52 @@
             border: none;
             font-size: 1.2rem;
             cursor: pointer;
+            font-family: 'Courier New', Courier, monospace; 
         }
 
         .hidden { display: none !important; }
+        
+        /* Panneau de paramètres */
+        #settings-panel {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        #settings-panel h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            color: #00ff00;
+            text-align: center;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .setting-group { margin-bottom: 15px; }
+        .setting-group label { display: block; margin-bottom: 5px; font-size: 1rem; color: #ffffff; }
+
+        .setting-group input[type=range] {
+            width: 100%; -webkit-appearance: none; appearance: none; height: 8px;
+            background: #444; outline: none; opacity: 0.9; transition: opacity .2s;
+            border-radius: 4px;
+        }
+        .setting-group input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 15px; height: 15px;
+            border-radius: 50%; background: #00ff00; cursor: pointer;
+        }
+        .setting-group input[type=range]::-moz-range-thumb {
+            width: 15px; height: 15px; border-radius: 50%;
+            background: #00ff00; cursor: pointer;
+        }
 
         /* -------------------------------------------------------------------------- */
-        /* MOBILE CONTROLS STYLES                                                    */
+        /* MOBILE CONTROLS STYLES & PAUSE BUTTON                                      */
         /* -------------------------------------------------------------------------- */
         #mobile-controls {
             position: absolute;
@@ -234,52 +229,19 @@
             z-index: 10;
         }
 
-        /* Mouvement Joystick (Gauche) */
-        #joystick-area {
+        /* Bouton Pause (UNIQUEMENT MOBILE) */
+        #btn-pause-mobile {
             position: absolute;
-            bottom: 30px; 
-            left: 30px;  
-            width: 120px; 
-            height: 120px; 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid rgba(0, 255, 0, 0.5); 
-            border-radius: 50%;
-            pointer-events: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            touch-action: none;
-        }
-
-        #joystick-handle {
+            top: 15px;
+            left: 15px;
             width: 50px; 
             height: 50px; 
-            background: rgba(0, 255, 0, 0.7);
-            border-radius: 50%;
-            transform: translate(0, 0);
-        }
-
-        /* Rotation Caméra (Droite) & Interaction Clic */
-        #look-area {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 70%; 
-            height: 100%;
-            pointer-events: auto;
-        }
-        
-        /* Boutons d'interaction */
-        .mobile-button {
-            position: absolute;
-            width: 60px; 
-            height: 60px; 
-            background: rgba(0, 255, 0, 0.6);
+            background: rgba(0, 0, 0, 0.6);
             border: 2px solid #00ff00;
-            color: #000;
-            font-size: 12px; 
+            color: #00ff00;
+            font-size: 1.5rem; 
             font-weight: bold;
-            border-radius: 50%;
+            border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -288,20 +250,56 @@
             touch-action: none;
             transition: background 0.1s;
             box-shadow: 0 0 10px rgba(0,255,0,0.3); 
+            z-index: 12; /* Au-dessus des autres UI */
+            cursor: pointer;
         }
-        .mobile-button:active {
-            background: #00cc00;
-        }
-        
-        #btn-interact {
-            bottom: 110px; 
-            right: 30px;
+        #btn-pause-mobile:active {
+            background: rgba(0, 0, 0, 0.8);
         }
 
-        #btn-note {
-            bottom: 30px; 
-            right: 30px;
+        /* Joystick Mouvement (Gauche) */
+        #joystick-area {
+            position: absolute; bottom: 30px; left: 30px;  
+            width: 120px; height: 120px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(0, 255, 0, 0.5); 
+            border-radius: 50%;
+            pointer-events: auto; display: flex;
+            justify-content: center; align-items: center;
+            touch-action: none;
         }
+
+        #joystick-handle {
+            width: 50px; height: 50px; 
+            background: rgba(0, 255, 0, 0.7);
+            border-radius: 50%;
+            transform: translate(0, 0);
+        }
+
+        /* Rotation Caméra (Droite) & Interaction Clic */
+        #look-area {
+            position: absolute; top: 0; right: 0;
+            width: 70%; height: 100%;
+            pointer-events: auto;
+        }
+        
+        /* Boutons d'interaction */
+        .mobile-button {
+            position: absolute;
+            width: 60px; height: 60px; 
+            background: rgba(0, 255, 0, 0.6);
+            border: 2px solid #00ff00;
+            color: #000; font-size: 12px; 
+            font-weight: bold; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: auto; user-select: none; touch-action: none;
+            transition: background 0.1s;
+            box-shadow: 0 0 10px rgba(0,255,0,0.3); 
+        }
+        .mobile-button:active { background: #00cc00; }
+        
+        #btn-interact { bottom: 110px; right: 30px; }
+        #btn-note { bottom: 30px; right: 30px; }
         
         /* Classes spécifiques pour masquer les éléments PC sur mobile et inversement */
         .pc-only { display: block; }
@@ -311,9 +309,7 @@
             .pc-only { display: none !important; }
             .mobile-only { display: block; }
             
-            #interaction-text {
-                top: 55%; /* Ajuster la position pour ne pas gêner les boutons */
-            }
+            #interaction-text { top: 55%; } 
         }
     </style>
 </head>
@@ -321,22 +317,60 @@
 
     <!-- Menus & UI -->
     <div id="blocker">
-        <h1 style="font-size: 60px; margin-bottom: 0;">ESCAPE PROTOCOL</h1>
-        <p>5 Niveaux | Trouvez les indices | Sortez</p>
-        <div style="text-align: left; background: #222; padding: 20px; border: 1px solid #444; border-radius: 5px;">
+        <!-- Le titre et le message changent dynamiquement -->
+        <h1 id="menu-title" style="font-size: 60px; margin-bottom: 0;">ESCAPE PROTOCOL</h1>
+        <p id="menu-message">5 Niveaux | Trouvez les indices | Sortez</p>
+        
+        <!-- Informations de Contrôle -->
+        <div id="controls-info" style="text-align: left; background: #222; padding: 20px; border: 1px solid #444; border-radius: 5px;">
             <b class="pc-only">Contrôles PC :</b>
             <b class="mobile-only">Contrôles Mobiles :</b><br>
             <span class="pc-only">[Z, Q, S, D] : Se déplacer<br></span>
             <span class="pc-only">[Souris] : Regarder<br></span>
-            <span class="pc-only">[Clic Gauche] : Interagir / Ramasser<br></span>
-            <span class="pc-only">[Clic Droit] : Lâcher un objet<br></span>
-            <span class="pc-only">[E] : Lire une note (si en main)</span>
+            <span class="pc-only">[Clic G] : Interagir<br></span>
+            <span class="pc-only">[E] : Lire une note / [Échap] : PAUSE</span>
 
             <span class="mobile-only">[Joystick Gauche] : Mouvement<br></span>
             <span class="mobile-only">[Glisser Droite] : Regarder / Pivoter<br></span>
-            <span class="mobile-only">[Bouton Clic] : Interagir / Ramasser</span>
+            <span class="mobile-only">[Boutons] : Interagir / Lire Note / PAUSE</span>
         </div>
+        
+        <!-- Boutons de Menu -->
+        <button id="resume-btn" class="hidden">REPRENDRE LA SIMULATION</button>
         <button id="play-btn">LANCER LA SIMULATION</button>
+        <button id="main-menu-btn" class="hidden" style="background-color: #aa0000; color: #fff;">QUITTER LA PARTIE</button>
+        
+        <button id="settings-btn" style="background-color: #444; color: #00ff00;">PARAMÈTRES</button>
+
+        <!-- Panneau des Paramètres -->
+        <div id="settings-panel" class="hidden">
+            <h3>RÉGLAGES</h3>
+            
+            <div class="setting-group">
+                <label for="camera-sensitivity">Sensibilité de la Caméra:</label>
+                <input type="range" id="camera-sensitivity" min="0.5" max="3" step="0.1" value="1">
+            </div>
+
+            <div class="setting-group">
+                <label for="light-intensity">Luminosité du Jeu (Facteur):</label>
+                <input type="range" id="light-intensity" min="0.5" max="2" step="0.1" value="1">
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 5px;">(Affecte les lumières de la scène)</p>
+            </div>
+            
+            <div class="setting-group">
+                <label for="fog-distance">Distance de Visibilité (Fog):</label>
+                <input type="range" id="fog-distance" min="10" max="30" step="1" value="12">
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 5px;">(Distance où le brouillard est total)</p>
+            </div>
+            
+            <div class="setting-group">
+                <label for="audio-volume">Volume Sonore:</label>
+                <input type="range" id="audio-volume" min="0" max="100" step="1" value="80">
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 5px;">(Ce jeu n'a pas de son pour le moment)</p>
+            </div>
+
+            <button id="back-to-menu-btn" style="background-color: #00ff00; color: #000;">RETOUR AU MENU</button>
+        </div>
     </div>
 
     <!-- Note Reading Overlay -->
@@ -349,10 +383,9 @@
         <div id="keypad-box">
             <h2>Clavier de Sécurité</h2>
             <div id="keypad-display">----</div>
-            <!-- L'input est masqué pour éviter le clavier virtuel mobile, la saisie se fait via les boutons -->
+            <!-- L'input est masqué pour éviter le clavier virtuel mobile -->
             <input type="text" id="keypad-input" maxlength="4" readonly onfocus="this.blur()" oninput="document.getElementById('keypad-display').innerText = this.value || '----';">
             <div class="keypad-buttons">
-                <!-- Les fonctions de saisie utilisent l'ajout de caractères à l'input masqué -->
                 <button onclick="appendKeypadValue('1')">1</button>
                 <button onclick="appendKeypadValue('2')">2</button>
                 <button onclick="appendKeypadValue('3')">3</button>
@@ -370,7 +403,7 @@
         </div>
     </div>
 
-    <!-- NOUVEAU RÉTICULE SVG -->
+    <!-- RÉTICULE SVG -->
     <div id="svg-crosshair-container">
         <svg id="svg-crosshair" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Cercle central simple (par défaut) -->
@@ -386,8 +419,6 @@
 
     <!-- UI Standard -->
     <div id="ui-layer">
-        <!-- L'ancien crosshair est conservé mais caché/non-utilisé, le SVG le remplace -->
-        <div id="crosshair" class="pc-only"></div> 
         <div id="interaction-text"></div>
         <div id="messages"></div>
         <div id="inventory">Inventaire: Vide</div>
@@ -397,6 +428,9 @@
     <!-- CONTROLS MOBILES (MOBILE ONLY) -->
     <div id="mobile-controls" class="mobile-only">
         
+        <!-- NOUVEAU: Bouton PAUSE Mobile -->
+        <div id="btn-pause-mobile" onclick="pauseGame()">&#9616;&#9616;</div>
+
         <!-- Joystick Mouvement -->
         <div id="joystick-area">
             <div id="joystick-handle"></div>
@@ -417,34 +451,36 @@
     <script>
         // --- GAME STATE ---
         const gameState = {
-            level: 1,
+            level: 0, 
             inventory: [],
             holdingItem: null,
             flags: {},
-            isPaused: false,
+            isPaused: true,
             
             // État du Joystick
             joystick: {
                 active: false,
-                vector: new THREE.Vector2(0, 0), // (x, z) movement
+                vector: new THREE.Vector2(0, 0), 
                 maxDistance: 60, 
             },
             
             // Détection Mobile
             isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0),
             
-            // Facteur de luminosité mobile
-            mobileLightFactor: 1.5 
+            // Gestion des paramètres avec valeurs par défaut
+            settings: {
+                cameraSensitivity: 1.0, 
+                lightIntensityFactor: 1.0, 
+                fogDistance: 12, // Nouvelle valeur par défaut
+                audioVolume: 80, // Nouvelle valeur par défaut
+            },
         };
         
-        // Ajustement de l'intensité de la lumière en fonction de l'appareil
-        const lightIntensity = gameState.isMobile ? gameState.mobileLightFactor : 1;
-
-
         // --- THREE JS SETUP ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x050505);
-        scene.fog = new THREE.Fog(0x050505, 0, 12);
+        // Le brouillard est mis à jour dans applyLightSettings
+        scene.fog = new THREE.Fog(0x050505, 0, gameState.settings.fogDistance); 
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.rotation.order = "YXZ";
@@ -455,9 +491,9 @@
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
         
-        // --- CONSTANTES GLOBALES (Déclarées une seule fois) ---
+        // --- CONSTANTES GLOBALES ---
         const PLAYER_HEIGHT = 3.0; 
-        const PLAYER_RADIUS = 0.3; // Rayon de la capsule de collision du joueur
+        const PLAYER_RADIUS = 0.3; 
         const collisionRaycaster = new THREE.Raycaster();
 
 
@@ -478,18 +514,14 @@
         let interactables = [];
         let colliders = [];
         let currentLevelObjects = [];
+        let lightObjects = []; // Pour pouvoir ajuster l'intensité
         
-        // La logique de collision Raycaster est maintenant au début du script pour éviter les doubles déclarations
-
         function clearLevel() {
             currentLevelObjects.forEach(obj => scene.remove(obj));
             currentLevelObjects = [];
             interactables = [];
             colliders = [];
-            gameState.flags = {}; 
-            gameState.holdingItem = null;
-            gameState.inventory = [];
-            updateInventoryUI();
+            lightObjects = [];
         }
 
         // --- BUILDER HELPERS ---
@@ -509,7 +541,6 @@
         }
 
         function createInteractable(name, geo, mat, x, y, z, action, userData={}) {
-            // Un objet interactif est aussi un collidable par défaut (sauf si c'est le sol, mais ça c'est géré par createWall)
             const mesh = new THREE.Mesh(geo, mat);
             mesh.position.set(x, y, z);
             mesh.castShadow = true;
@@ -517,7 +548,6 @@
             scene.add(mesh);
             interactables.push(mesh);
             currentLevelObjects.push(mesh);
-            // Les objets interactifs qui sont des blocs solides (coffres, portes) sont des colliders
             if (geo instanceof THREE.BoxGeometry || geo instanceof THREE.CylinderGeometry) {
                  colliders.push(mesh);
             }
@@ -527,10 +557,9 @@
         function createNote(x, y, z, content, title="Note froissée", rotation=0) {
             const mesh = createInteractable(title, new THREE.PlaneGeometry(0.3, 0.4), mat.paper, x, y, z, null);
             mesh.rotation.x = -Math.PI/2;
-            mesh.rotation.z = rotation; // Nouvelle rotation pour simuler l'atterrissage
+            mesh.rotation.z = rotation; 
             mesh.userData.isPortable = true; 
             mesh.userData.noteContent = content; 
-            // Les notes ne sont PAS des colliders
             colliders = colliders.filter(c => c !== mesh); 
             
             mesh.userData.action = () => {
@@ -547,12 +576,13 @@
         }
 
         function createLight(x, y, z, color=0xffaa00, intensity=1) {
-            // Utilisation de lightIntensity (ajusté pour le mobile)
-            const light = new THREE.PointLight(color, intensity * lightIntensity, 10);
+            const light = new THREE.PointLight(color, intensity * gameState.settings.lightIntensityFactor, 10);
             light.position.set(x, y, z);
             light.castShadow = true;
+            light.receiveShadow = true;
             scene.add(light);
             currentLevelObjects.push(light);
+            lightObjects.push(light); // Ajout à la liste des lumières
             
             const b = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({color:color}));
             b.position.copy(light.position);
@@ -560,10 +590,20 @@
             currentLevelObjects.push(b);
         }
 
-        // ================= LEVELS =================
+        // ================= LEVELS (Le contenu des niveaux est le même) =================
+        const levelLoaders = [
+            null, // Index 0 non utilisé
+            loadLevel1,
+            loadLevel2,
+            loadLevel3,
+            loadLevel4,
+            loadLevel5
+        ];
 
         function loadLevel1() {
             gameState.level = 1;
+            
+            // Mise à jour de la lumière en fonction des paramètres
             createLight(0, 4, 0, 0xffaa88, 0.8);
 
             createWall(0, 0, 0, 10, 0.2, 10, mat.floor); 
@@ -573,18 +613,14 @@
             createWall(5, 2.5, 0, 0.5, 5, 10, mat.wall); 
             createWall(0, 2.5, 5, 10, 5, 0.5, mat.wall); 
 
-            // Lit/Meuble décoratif (Collidable)
             createWall(-3.5, 1.5, -3, 2, 3, 3.5, new THREE.MeshStandardMaterial({color:0x333344})); 
             
-            // COFFRE-FORT (La clé d'évasion est dedans)
             const SAFE_CODE = "2025";
             
-            // CLÉ D'ÉVASION (L'objet qui ouvre la porte)
             const ESCAPE_KEY = createInteractable("Clé d'Évasion", new THREE.TorusGeometry(0.1, 0.02, 8, 20), new THREE.MeshStandardMaterial({color:0xffd700}), 4, 1.1, -4, null);
             ESCAPE_KEY.rotation.y = Math.PI/2;
             ESCAPE_KEY.userData.isPortable = true;
-            ESCAPE_KEY.visible = false; // Cachée initialement à l'intérieur du coffre
-            // La clé n'est PAS un collider
+            ESCAPE_KEY.visible = gameState.flags.safeOpen || false; 
             colliders = colliders.filter(c => c !== ESCAPE_KEY);
             
             ESCAPE_KEY.userData.action = () => {
@@ -592,12 +628,11 @@
                 removeObject(ESCAPE_KEY);
             }
 
-            // Coffre-fort (Collidable)
             const safe = createInteractable("Coffre-fort Sécurisé", new THREE.BoxGeometry(0.8, 0.8, 0.8), mat.metal, 4, 0.5, -4, null);
             safe.userData.action = () => {
                 if(gameState.flags.safeOpen) {
                     showMessage("Déjà ouvert. La clé est là.");
-                    ESCAPE_KEY.visible = true; // S'assurer que la clé est visible si le coffre est ouvert
+                    ESCAPE_KEY.visible = true;
                 }
                 else openKeypad(SAFE_CODE, () => {
                     gameState.flags.safeOpen = true;
@@ -606,24 +641,27 @@
                 });
             };
 
-            // NOTE (INDICE POUR LE COFFRE)
             const NOTE_CONTENT = "L'unique chose qui vous manque est l'image qui cache le SOUVENIR. \nLe code (4 chiffres) est l'année de la SIMULATION (2025). \nLa clé est à l'intérieur.";
             
-            // TABLEAU
             const painting = createInteractable("Tableau Ancien", new THREE.BoxGeometry(1.5, 1.5, 0.1), mat.wood, 0, 2.5, -4.7, null);
-            // Les tableaux (éléments plats) ne sont PAS des colliders
             colliders = colliders.filter(c => c !== painting);
+            painting.rotation.z = gameState.flags.paintingRevealed ? 0.5 : 0;
+            
+            if (gameState.flags.paintingRevealed && !hasItem("Note Câchée")) {
+                 const note = createNote(0.2, 0.1, -4.5, NOTE_CONTENT, "Note Câchée", Math.PI/4);
+                 note.position.set(0.2, 0.1, -4.5);
+                 note.rotation.x = -Math.PI/2;
+                 note.rotation.z = Math.PI/4;
+            }
             
             painting.userData.action = () => {
                 if (!gameState.flags.paintingRevealed) {
-                    painting.rotation.z = 0.5; // Fait pivoter le tableau
+                    painting.rotation.z = 0.5; 
                     
-                    // CRÉATION DE LA NOTE ET CHUTE AU SOL
-                    // La note apparaît légèrement derrière le tableau, puis tombe
-                    const note = createNote(0.2, 0.1, -4.5, NOTE_CONTENT, "Note Câchée", Math.PI/4); // Position Y au sol
+                    const note = createNote(0.2, 0.1, -4.5, NOTE_CONTENT, "Note Câchée", Math.PI/4); 
                     note.position.set(0.2, 0.1, -4.5);
                     note.rotation.x = -Math.PI/2;
-                    note.rotation.z = Math.PI/4; // Légèrement inclinée au sol
+                    note.rotation.z = Math.PI/4;
 
                     showMessage("Le tableau est décroché... Une note est tombée au sol."); 
                     painting.userData.name = "Tableau décroché";
@@ -656,15 +694,23 @@
             createWall(0, 2.5, 6, 6, 5, 0.5, mat.door); 
 
             createWall(-2, 1, -4, 1, 2, 1, mat.metal); 
+            
+            if (gameState.flags.powerOn) {
+                createLight(0, 3, 5, 0x00ff00, 1);
+            }
 
             const fuseBox = createInteractable("Boite à fusibles endommagée", new THREE.BoxGeometry(0.5, 0.8, 0.2), mat.metal, -1.9, 1.5, -3.4, null);
-            // La boite à fusible n'est PAS un collider (trop fine pour être un obstacle)
             colliders = colliders.filter(c => c !== fuseBox);
             fuseBox.userData.action = () => {
+                if(gameState.flags.powerOn) {
+                    showMessage("Le courant est déjà rétabli.");
+                    return;
+                }
                 if(hasItem("Fusible Renforcé")) {
                     showMessage("Le fusible s'enclenche ! Courant rétabli.");
-                    // Utilisation de lightIntensity (ajusté pour le mobile)
-                    createLight(0, 3, 5, 0x00ff00, 1 * lightIntensity); 
+                    // Mettre à jour l'intensité des lumières existantes après la création de la nouvelle lumière
+                    clearLevel();
+                    loadLevel2();
                     gameState.flags.powerOn = true;
                     removeItem("Fusible Renforcé"); 
                 } else {
@@ -681,18 +727,18 @@
             createNote(2.5, 0.1, 0, "Dernier emplacement connu du Fusible B :\nSous l'unique source de lumière naturelle de ce couloir (un petit conduit d'aération).", "Rapport incident - Maintenance");
 
             const vent = createInteractable("Grille de Ventilation", new THREE.BoxGeometry(1, 0.1, 1), mat.metal, 0, 4.9, 3, ()=>showMessage("Trop haut pour atteindre."));
-            // La grille de ventilation est un collider
             
             createWall(0, 1, -5.5, 4, 0.1, 1, mat.wood); 
             
-            const fuse = createInteractable("Fusible Renforcé", new THREE.CylinderGeometry(0.05, 0.05, 0.3), mat.red, 2.5, 0.1, 3.5, null);
-            fuse.rotation.z = Math.PI/2;
-            fuse.userData.isPortable = true; 
-            // Le fusible n'est PAS un collider
-            colliders = colliders.filter(c => c !== fuse);
-            fuse.userData.action = () => {
-                addToInventory({ name: "Fusible Renforcé" });
-                removeObject(fuse);
+            if (!hasItem("Fusible Renforcé") && !gameState.flags.powerOn) {
+                const fuse = createInteractable("Fusible Renforcé", new THREE.CylinderGeometry(0.05, 0.05, 0.3), mat.red, 2.5, 0.1, 3.5, null);
+                fuse.rotation.z = Math.PI/2;
+                fuse.userData.isPortable = true; 
+                colliders = colliders.filter(c => c !== fuse);
+                fuse.userData.action = () => {
+                    addToInventory({ name: "Fusible Renforcé" });
+                    removeObject(fuse);
+                }
             }
         }
 
@@ -706,17 +752,20 @@
             createWall(4, 2.5, 0, 0.5, 5, 8, mat.wall);
             createWall(0, 2.5, 4, 8, 5, 0.5, mat.door); 
 
-            const c1 = createInteractable("Cube CYAN (1)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0x00ffff}), -2, 0.5, -2, ()=>showMessage("C'est le premier cube de la séquence."));
-            const c2 = createInteractable("Cube MAGENTA (2)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xff00ff}), 0, 0.5, -2, ()=>showMessage("C'est le deuxième cube."));
-            const c3 = createInteractable("Cube JAUNE (3)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xffff00}), 2, 0.5, -2, ()=>showMessage("C'est le troisième cube."));
+            createInteractable("Cube CYAN (1)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0x00ffff}), -2, 0.5, -2, ()=>showMessage("C'est le premier cube de la séquence."));
+            createInteractable("Cube MAGENTA (2)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xff00ff}), 0, 0.5, -2, ()=>showMessage("C'est le deuxième cube."));
+            createInteractable("Cube JAUNE (3)", new THREE.BoxGeometry(0.5,0.5,0.5), new THREE.MeshStandardMaterial({color:0xffff00}), 2, 0.5, -2, ()=>showMessage("C'est le troisième cube."));
             
-            // Les cubes sont des colliders
-
             createWall(0, 1, 0, 4, 0.1, 2, mat.wood); 
 
-            const COLOR_CODE = "475"; 
-            createNote(0, 1.1, 0, "Règle de Séquence :\nLe code n'est pas l'ordre, mais le COMPTE.\nComptez le nombre de lettres de chaque couleur.\n(1) Cyan (4), (2) Magenta (7), (3) Jaune (5).", "Post-it sur le bureau");
+            const NOTE_L3 = "Règle de Séquence :\nLe code n'est pas l'ordre, mais le COMPTE.\nComptez le nombre de lettres de chaque couleur.\n(1) Cyan (4), (2) Magenta (7), (3) Jaune (5).";
+            
+            if (!hasItem("Post-it sur le bureau")) {
+                createNote(0, 1.1, 0, NOTE_L3, "Post-it sur le bureau");
+            }
 
+            const COLOR_CODE = "475"; 
+            
             const door = createInteractable("Porte Sécurisée", new THREE.BoxGeometry(2, 4, 0.2), mat.door, 0, 2, 3.8, null);
             door.userData.action = () => {
                 openKeypad(COLOR_CODE, () => nextLevel(4));
@@ -745,18 +794,32 @@
             createWall(-3, 1, 0, 2, 0.1, 8, mat.metal);
             createWall(3, 1, 0, 2, 0.1, 8, mat.metal);
 
-            const f1 = createInteractable("Fiole Bleue (B)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.blue, -3, 1.3, -2, null);
-            colliders = colliders.filter(c => c !== f1); // Fiole non-collidable
-            f1.userData.action = () => { addToInventory({ name: "Fiole Bleue (B)" }); removeObject(f1); };
-            
-            const f2 = createInteractable("Fiole Jaune (J)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), new THREE.MeshStandardMaterial({color:0xffff00}), 3, 1.3, 2, null);
-            colliders = colliders.filter(c => c !== f2); // Fiole non-collidable
-            f2.userData.action = () => { addToInventory({ name: "Fiole Jaune (J)" }); removeObject(f2); };
+            if (!hasItem("Fiole Bleue (B)")) {
+                const f1 = createInteractable("Fiole Bleue (B)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.blue, -3, 1.3, -2, null);
+                colliders = colliders.filter(c => c !== f1); 
+                f1.userData.action = () => { addToInventory({ name: "Fiole Bleue (B)" }); removeObject(f1); };
+            }
+            if (!hasItem("Fiole Jaune (J)")) {
+                const f2 = createInteractable("Fiole Jaune (J)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), new THREE.MeshStandardMaterial({color:0xffff00}), 3, 1.3, 2, null);
+                colliders = colliders.filter(c => c !== f2); 
+                f2.userData.action = () => { addToInventory({ name: "Fiole Jaune (J)" }); removeObject(f2); };
+            }
+            if (!hasItem("Fiole Rouge (R)")) {
+                const f3 = createInteractable("Fiole Rouge (R)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.red, 3, 1.3, -2, null);
+                colliders = colliders.filter(c => c !== f3); 
+                f3.userData.action = () => { addToInventory({ name: "Fiole Rouge (R)" }); removeObject(f3); };
+            }
+
 
             const mixer = createInteractable("Mélangeur Chimique", new THREE.BoxGeometry(1, 0.5, 1), mat.metal, 0, 1, -4, null);
             createWall(0, 0.5, -4, 2, 1, 1, mat.wood); 
             
             mixer.userData.action = () => {
+                if (hasItem("Solution Dissolvante")) {
+                    showMessage("Le mélange est déjà prêt.");
+                    return;
+                }
+                
                 if(hasItem("Fiole Bleue (B)") && hasItem("Fiole Jaune (J)") && !gameState.flags.mixedGreen) {
                     showMessage("Mélange B + J... Obtention de la Solution VERT.");
                     removeItem("Fiole Bleue (B)");
@@ -774,11 +837,11 @@
                 }
             };
             
-            createNote(-3, 1.1, 2, "Protocole : Le Bio-verrou réagit à la Solution Dissolvante (VIOLET).\nFormule: Bleu + Jaune = Vert. Vert + Rouge = Violet (Dissolvant).\n[Le Rouge est caché sur la paillasse de droite.]", "Protocole Labo");
-
-            const f3 = createInteractable("Fiole Rouge (R)", new THREE.CylinderGeometry(0.1, 0.15, 0.4), mat.red, 3, 1.3, -2, null);
-            colliders = colliders.filter(c => c !== f3); // Fiole non-collidable
-            f3.userData.action = () => { addToInventory({ name: "Fiole Rouge (R)" }); removeObject(f3); };
+            const NOTE_L4 = "Protocole : Le Bio-verrou réagit à la Solution Dissolvante (VIOLET).\nFormule: Bleu + Jaune = Vert. Vert + Rouge = Violet (Dissolvant).\n[Le Rouge est caché sur la paillasse de droite.]";
+            
+            if (!hasItem("Protocole Labo")) {
+                 createNote(-3, 1.1, 2, NOTE_L4, "Protocole Labo");
+            }
         }
 
         function loadLevel5() {
@@ -789,18 +852,26 @@
             createWall(0, 3, -7.5, 15, 6, 0.5, mat.wall);
             createWall(0, 3, 7.5, 15, 6, 0.5, mat.door); 
 
-            const box = createInteractable("Caisse lourde", new THREE.BoxGeometry(2, 2, 2), mat.wood, 0, 1, 6, null);
-            box.userData.action = () => showMessage("Trop lourd... Il faut désactiver l'alimentation de la zone.");
+            if (!gameState.flags.boxMoved) {
+                const box = createInteractable("Caisse lourde", new THREE.BoxGeometry(2, 2, 2), mat.wood, 0, 1, 6, null);
+                box.userData.action = () => showMessage("Trop lourd... Il faut désactiver l'alimentation de la zone.");
+            }
             
             const panel = createInteractable("Panneau Électrique Principal", new THREE.BoxGeometry(0.5, 1.5, 0.2), mat.metal, -6.8, 2, 0, null);
-            colliders = colliders.filter(c => c !== panel); // Panneau non-collidable
+            colliders = colliders.filter(c => c !== panel); 
             panel.userData.action = () => {
+                if(gameState.flags.powerDisabled) {
+                    showMessage("Alimentation déjà coupée.");
+                    return;
+                }
                 if(hasItem("Code d'Accès")) {
                     openKeypad("351", () => {
                         gameState.flags.powerDisabled = true;
                         showMessage("Système de sécurité désactivé. La caisse n'est plus verrouillée au sol.");
-                        scene.remove(box);
-                        interactables = interactables.filter(i => i !== box); 
+                        
+                        const boxToRemove = interactables.find(i => i.userData.name === "Caisse lourde");
+                        if(boxToRemove) removeObject(boxToRemove);
+                        
                         gameState.flags.boxMoved = true;
                         removeItem("Code d'Accès"); 
                     });
@@ -809,22 +880,30 @@
                 }
             };
             
-            const codeItem = createInteractable("Code d'Accès", new THREE.PlaneGeometry(0.4, 0.3), mat.paper, 5, 2.5, -5, null);
-            codeItem.rotation.x = -Math.PI/2;
-            codeItem.userData.isPortable = true;
-            codeItem.userData.noteContent = "Code de Désactivation : 351\n(Ne PAS utiliser le code de la porte)";
-            // L'objet code n'est PAS un collider
-            colliders = colliders.filter(c => c !== codeItem); 
-            codeItem.userData.action = () => {
-                addToInventory({ name: "Code d'Accès", content: codeItem.userData.noteContent, isNote: true });
-                removeObject(codeItem);
+            const CODE_L5 = "Code de Désactivation : 351\n(Ne PAS utiliser le code de la porte)";
+            
+            if (!hasItem("Code d'Accès")) {
+                const codeItem = createInteractable("Code d'Accès", new THREE.PlaneGeometry(0.4, 0.3), mat.paper, 5, 2.5, -5, null);
+                codeItem.rotation.x = -Math.PI/2;
+                codeItem.userData.isPortable = true;
+                codeItem.userData.noteContent = CODE_L5;
+                colliders = colliders.filter(c => c !== codeItem); 
+                codeItem.userData.action = () => {
+                    addToInventory({ name: "Code d'Accès", content: codeItem.userData.noteContent, isNote: true });
+                    removeObject(codeItem);
+                }
             }
             
             const exit = createInteractable("SORTIE", new THREE.BoxGeometry(4, 5, 0.2), new THREE.MeshStandardMaterial({color:0xffffff, emissive:0x555555}), 0, 2.5, 7.5, null);
             exit.userData.action = () => {
                 if(gameState.flags.boxMoved) {
                     document.getElementById('blocker').classList.remove('hidden');
-                    document.getElementById('blocker').innerHTML = `<h1 style="font-size: 60px; color:#00ff00;">SIMULATION TERMINÉE</h1><p style="font-size: 30px; color:#ffffff;">FÉLICITATIONS ! VOUS ÊTES LIBRE !</p><button onclick="location.reload()">REJOUER</button>`;
+                    document.getElementById('menu-title').innerText = "SIMULATION TERMINÉE";
+                    document.getElementById('menu-message').innerHTML = "FÉLICITATIONS ! VOUS ÊTES LIBRE !";
+                    document.getElementById('resume-btn').classList.add('hidden');
+                    document.getElementById('play-btn').innerText = "REJOUER"; 
+                    document.getElementById('main-menu-btn').classList.add('hidden'); 
+                    
                     gameState.isPaused = true;
                     if (document.exitPointerLock) document.exitPointerLock(); 
                 } else {
@@ -833,8 +912,189 @@
             };
             
             const key = createInteractable("Clé de contact (Fausse Piste)", new THREE.BoxGeometry(0.2, 0.1, 0.5), mat.red, 5, 0.1, -5, null);
-            colliders = colliders.filter(c => c !== key); // Clé non-collidable
+            colliders = colliders.filter(c => c !== key); 
             key.userData.action = () => showMessage("Une clé ordinaire, inutile ici.");
+        }
+        
+        // --- CORE GAME FLOW FUNCTIONS ---
+
+        function startGame(newGame = false) {
+            if (newGame) {
+                gameState.level = 0;
+                gameState.flags = {};
+                gameState.inventory = [];
+                updateInventoryUI();
+                clearLevel();
+                loadLevel1();
+            } else {
+                if (gameState.level === 0) { 
+                    loadLevel1();
+                } else {
+                    clearLevel();
+                    const loader = levelLoaders[gameState.level];
+                    if (loader) loader();
+                }
+            }
+            
+            document.getElementById('play-btn').innerText = "REDÉMARRER LA SIMULATION";
+            document.getElementById('resume-btn').classList.remove('hidden');
+            document.getElementById('main-menu-btn').classList.add('hidden');
+
+            document.getElementById('blocker').classList.add('hidden');
+            gameState.isPaused = false;
+            
+            if (!gameState.isMobile && document.body.requestPointerLock) {
+                document.body.requestPointerLock();
+            }
+        }
+        
+        function pauseGame() {
+            gameState.isPaused = true;
+            document.getElementById('blocker').classList.remove('hidden');
+            
+            if (document.exitPointerLock) document.exitPointerLock(); 
+            
+            document.getElementById('menu-title').innerText = "SIMULATION EN PAUSE";
+            document.getElementById('menu-message').innerText = "Appuyez sur Reprendre pour continuer.";
+            document.getElementById('resume-btn').classList.remove('hidden');
+            document.getElementById('play-btn').classList.add('hidden');
+            document.getElementById('main-menu-btn').classList.remove('hidden'); 
+        }
+        
+        function resetToMainMenu() {
+            gameState.level = 0;
+            gameState.flags = {};
+            gameState.inventory = [];
+            gameState.isPaused = true;
+            updateInventoryUI();
+            clearLevel();
+            
+            document.getElementById('blocker').classList.remove('hidden');
+            document.getElementById('menu-title').innerText = "ESCAPE PROTOCOL";
+            document.getElementById('menu-message').innerText = "5 Niveaux | Trouvez les indices | Sortez";
+            
+            document.getElementById('resume-btn').classList.add('hidden');
+            document.getElementById('play-btn').classList.remove('hidden');
+            document.getElementById('play-btn').innerText = "LANCER LA SIMULATION";
+            document.getElementById('main-menu-btn').classList.add('hidden');
+            
+            document.getElementById('settings-panel').classList.add('hidden');
+            document.getElementById('settings-btn').classList.remove('hidden');
+            document.getElementById('controls-info').classList.remove('hidden');
+        }
+
+
+        // ================= CORE SETTINGS FUNCTIONS =================
+        function loadSettings() {
+            try {
+                const storedSettings = localStorage.getItem('escapeProtocolSettings');
+                if (storedSettings) {
+                    const parsed = JSON.parse(storedSettings);
+                    // S'assurer que les nouvelles clés sont prises en compte si elles n'existent pas
+                    gameState.settings = { ...gameState.settings, ...parsed };
+                }
+            } catch (e) {
+                console.error("Erreur lors du chargement des paramètres:", e);
+            }
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem('escapeProtocolSettings', JSON.stringify(gameState.settings));
+            } catch (e) {
+                console.error("Erreur lors de la sauvegarde des paramètres:", e);
+            }
+        }
+
+        function applyLightSettings() {
+            // 1. Mise à jour du brouillard (Fog)
+            scene.fog.far = parseFloat(gameState.settings.fogDistance); 
+            
+            // 2. Mise à jour de l'intensité des lumières
+            const intensityFactor = gameState.settings.lightIntensityFactor;
+            lightObjects.forEach(light => {
+                // Si la lumière est un PointLight, on ajuste son intensité.
+                if (light.isPointLight) {
+                    // Pour garder un comportement constant, on peut recalculer l'intensité initiale
+                    // (ceci est un hack simple, une vraie implémentation stockerait l'intensité de base)
+                    light.intensity = (light.userData.baseIntensity || 1) * intensityFactor;
+                }
+            });
+            
+            // 3. Mise à jour du volume (fictif)
+            const audioVolume = gameState.settings.audioVolume;
+            // console.log(`Volume sonore défini à ${audioVolume}%`); // Fictif
+            
+            if (!gameState.isPaused && gameState.level > 0) {
+                 showMessage(`Affichage et lumière ajustés (Fog: ${scene.fog.far.toFixed(0)}m, Lum: ${intensityFactor.toFixed(1)}).`);
+            }
+        }
+
+        function setupSettingsPanel() {
+            const settingsPanel = document.getElementById('settings-panel');
+            const settingsBtn = document.getElementById('settings-btn');
+            const backBtn = document.getElementById('back-to-menu-btn');
+            
+            const sensSlider = document.getElementById('camera-sensitivity');
+            const lightSlider = document.getElementById('light-intensity');
+            const fogSlider = document.getElementById('fog-distance');
+            const volumeSlider = document.getElementById('audio-volume');
+
+            // Mettre à jour les sliders avec les valeurs actuelles
+            sensSlider.value = gameState.settings.cameraSensitivity;
+            lightSlider.value = gameState.settings.lightIntensityFactor;
+            fogSlider.value = gameState.settings.fogDistance;
+            volumeSlider.value = gameState.settings.audioVolume;
+
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.classList.remove('hidden');
+                settingsBtn.classList.add('hidden');
+                document.getElementById('resume-btn').classList.add('hidden');
+                document.getElementById('play-btn').classList.add('hidden');
+                document.getElementById('main-menu-btn').classList.add('hidden');
+                document.getElementById('controls-info').classList.add('hidden'); 
+            });
+
+            backBtn.addEventListener('click', () => {
+                settingsPanel.classList.add('hidden');
+                settingsBtn.classList.remove('hidden');
+                document.getElementById('controls-info').classList.remove('hidden'); 
+                
+                if (gameState.level > 0 && !document.getElementById('menu-title').innerText.includes("TERMINÉE")) {
+                    document.getElementById('resume-btn').classList.remove('hidden');
+                    document.getElementById('main-menu-btn').classList.remove('hidden');
+                } else if (document.getElementById('menu-title').innerText.includes("TERMINÉE")) {
+                    document.getElementById('play-btn').classList.remove('hidden');
+                } else {
+                     document.getElementById('play-btn').classList.remove('hidden');
+                }
+            });
+
+            // Listeners pour les changements de valeur
+            sensSlider.addEventListener('input', (e) => {
+                gameState.settings.cameraSensitivity = parseFloat(e.target.value);
+                saveSettings();
+            });
+
+            lightSlider.addEventListener('input', (e) => {
+                gameState.settings.lightIntensityFactor = parseFloat(e.target.value);
+                applyLightSettings();
+                saveSettings();
+            });
+            
+            fogSlider.addEventListener('input', (e) => {
+                gameState.settings.fogDistance = parseFloat(e.target.value);
+                applyLightSettings();
+                saveSettings();
+            });
+            
+            volumeSlider.addEventListener('input', (e) => {
+                gameState.settings.audioVolume = parseInt(e.target.value);
+                applyLightSettings();
+                saveSettings();
+            });
+            
+            applyLightSettings();
         }
 
         // --- CORE FUNCTIONS ---
@@ -856,12 +1116,10 @@
             const opacity = isActive ? 1.0 : 0.7;
             const strokeWidth = isActive ? 3 : 2;
 
-            // Mise à jour du cercle central
             ch_center.setAttribute('fill', color);
             ch_center.setAttribute('r', isActive ? 4 : 3); 
             ch_center.setAttribute('opacity', opacity);
 
-            // Mise à jour des lignes (croix)
             const lines = [ch_h1, ch_h2, ch_v1, ch_v2];
             lines.forEach(line => {
                 line.setAttribute('stroke', color);
@@ -869,7 +1127,6 @@
                 line.setAttribute('opacity', opacity);
             });
             
-            // Sur activation, on réduit la longueur des lignes pour faire un "cercle" visuel
             if (isActive) {
                 ch_h1.setAttribute('x2', 9); ch_h2.setAttribute('x1', 21);
                 ch_v1.setAttribute('y2', 9); ch_v2.setAttribute('y1', 21);
@@ -880,17 +1137,13 @@
         }
         
         function init() {
-            document.getElementById('play-btn').addEventListener('click', () => {
-                loadLevel1();
-                document.getElementById('blocker').classList.add('hidden');
-                gameState.isPaused = false;
-                
-                if (!gameState.isMobile && document.body.requestPointerLock) {
-                    document.body.requestPointerLock();
-                    // Assurer que le crosshair CSS PC-only est masqué, le SVG est universel
-                    document.getElementById('crosshair').classList.remove('pc-visible');
-                }
-            });
+            loadSettings();
+            
+            document.getElementById('play-btn').addEventListener('click', () => startGame(true)); 
+            document.getElementById('resume-btn').addEventListener('click', () => startGame(false)); 
+            document.getElementById('main-menu-btn').addEventListener('click', resetToMainMenu); 
+            
+            setupSettingsPanel();
             
             updateInventoryUI();
             
@@ -898,23 +1151,23 @@
             
             setupMobileControls();
             
-            document.getElementById('blocker').classList.remove('hidden');
-            gameState.isPaused = true;
+            resetToMainMenu();
         }
 
         function nextLevel(n) {
             showMessage("NIVEAU TERMINÉ...");
             setTimeout(() => {
                 clearLevel();
-                if(n===1) loadLevel1();
-                if(n===2) loadLevel2();
-                if(n===3) loadLevel3();
-                if(n===4) loadLevel4();
-                if(n===5) loadLevel5();
+                gameState.level = n;
+                const loader = levelLoaders[n];
+                if (loader) loader();
                 
                 document.getElementById('level-indicator').innerText = "Niveau " + n + "/5";
                 camera.position.set(0, PLAYER_HEIGHT, 0);
                 camera.rotation.set(0, 0, 0);
+                
+                // Réappliquer les paramètres de lumière pour le nouveau niveau
+                applyLightSettings();
             }, 1000);
         }
 
@@ -940,15 +1193,13 @@
         function removeObject(mesh) {
             scene.remove(mesh);
             interactables = interactables.filter(i => i !== mesh);
-            colliders = colliders.filter(c => c !== mesh); // S'assurer qu'il est retiré des colliders aussi
+            colliders = colliders.filter(c => c !== mesh); 
             if(gameState.holdingItem === mesh) {
                 gameState.holdingItem = null;
             }
         }
 
         // Interaction Logic
-        // ... (raycaster and center are defined above)
-
         function getInteractable() {
             raycaster.setFromCamera(center, camera);
             const intersects = raycaster.intersectObjects(interactables);
@@ -971,15 +1222,20 @@
             gameState.isPaused = true;
             document.getElementById('note-content').innerText = content;
             document.getElementById('note-overlay').classList.remove('hidden');
+            
+             // Note: Si le jeu est mis en pause par Échap, la logique de reprise doit être gérée
+             // par l'overlay de la note ou du keypad.
         }
         
-        document.getElementById('note-overlay').addEventListener('click', () => {
-            document.getElementById('note-overlay').classList.add('hidden');
-            gameState.isPaused = false;
-            if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
+        document.getElementById('note-overlay').addEventListener('click', (e) => {
+            // Empêcher la fermeture si le clic est sur le contenu lui-même
+            if (e.target.id === 'note-overlay') { 
+                document.getElementById('note-overlay').classList.add('hidden');
+                if (gameState.level > 0) startGame(false); 
+            }
         });
 
-        // Keypad Functions - ULTRA-COMPRESSED
+        // Keypad Functions
         let currentCodeCallback = null;
         let correctCode = "";
         
@@ -1001,7 +1257,6 @@
             }
         }
         
-        // Nouvelle fonction pour ajouter une valeur (appelée par les boutons)
         window.appendKeypadValue = (digit) => {
              const keypadInput = document.getElementById('keypad-input');
              if (keypadInput.value.length < keypadInput.maxLength) {
@@ -1010,7 +1265,6 @@
              }
         };
         
-        // Nouvelle fonction pour effacer (appelée par CLR)
         window.clearKeypad = () => {
              const keypadInput = document.getElementById('keypad-input');
              keypadInput.value = "";
@@ -1031,8 +1285,7 @@
         
         window.closeKeypad = () => {
             document.getElementById('keypad-overlay').classList.add('hidden');
-            gameState.isPaused = false;
-            if (!gameState.isMobile && document.body.requestPointerLock) document.body.requestPointerLock();
+            if (gameState.level > 0) startGame(false); 
         };
 
         // --------------------------------------------------------------------------
@@ -1042,8 +1295,18 @@
         
         document.addEventListener('keydown', e => {
             if(gameState.isMobile) return; 
-            if(gameState.isPaused) return; 
 
+            if(e.key === 'Escape' && gameState.level > 0) {
+                 e.preventDefault();
+                 // Si on n'est pas déjà en mode pause (keypad/note), alors mettre en pause
+                 if (document.getElementById('keypad-overlay').classList.contains('hidden') && 
+                     document.getElementById('note-overlay').classList.contains('hidden')) {
+                     pauseGame();
+                 }
+                 return;
+            }
+            if(gameState.isPaused) return; 
+            
             if(e.key.toLowerCase() === 'z' || e.key === 'ArrowUp') keys.w = true;
             if(e.key.toLowerCase() === 'q' || e.key === 'ArrowLeft') keys.a = true;
             if(e.key.toLowerCase() === 's' || e.key === 'ArrowDown') keys.s = true;
@@ -1079,8 +1342,11 @@
         document.addEventListener('mousemove', e => {
             if(gameState.isMobile) return; 
             if(gameState.isPaused || document.pointerLockElement !== document.body) return;
-            camera.rotation.y -= e.movementX * 0.002;
-            camera.rotation.x -= e.movementY * 0.002;
+            
+            const sensitivity = gameState.settings.cameraSensitivity * 0.002;
+            
+            camera.rotation.y -= e.movementX * sensitivity;
+            camera.rotation.x -= e.movementY * sensitivity;
             camera.rotation.x = Math.max(-1.5, Math.min(1.5, camera.rotation.x));
         });
         
@@ -1096,11 +1362,16 @@
             const btnInteract = document.getElementById('btn-interact');
             const btnNote = document.getElementById('btn-note');
             
-            // --- 1. Joystick Mouvement ---
             let joystickTouchId = null;
-            const joystickRect = joystickArea.getBoundingClientRect();
-            const startX = joystickRect.left + joystickRect.width / 2;
-            const startY = joystickRect.top + joystickRect.height / 2;
+            let startX, startY;
+
+            const updateJoystickArea = () => {
+                const joystickRect = joystickArea.getBoundingClientRect();
+                startX = joystickRect.left + joystickRect.width / 2;
+                startY = joystickRect.top + joystickRect.height / 2;
+            };
+            updateJoystickArea();
+            window.addEventListener('resize', updateJoystickArea);
 
             joystickArea.addEventListener('touchstart', (e) => {
                 if(gameState.isPaused) return;
@@ -1146,19 +1417,26 @@
                 joystickTouchId = null;
             };
 
-            document.addEventListener('touchend', resetJoystick);
+            document.addEventListener('touchend', (e) => {
+                 for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        resetJoystick();
+                        return;
+                    }
+                }
+            });
             document.addEventListener('touchcancel', resetJoystick);
 
-            // --- 2. Rotation Caméra (Look Area) ---
             let lookTouchId = null;
             let lastX = 0;
             let lastY = 0;
-            const sensitivity = 0.005; 
 
             lookArea.addEventListener('touchstart', (e) => {
                 if (gameState.isPaused) return;
                 e.preventDefault();
                 const touch = e.changedTouches[0];
+                if (touch.identifier === joystickTouchId) return; 
+
                 lookTouchId = touch.identifier;
                 lastX = touch.clientX;
                 lastY = touch.clientY;
@@ -1177,33 +1455,37 @@
                 }
                 if (!touch) return;
 
-                // Calculer les deltas (l'équivalent de movementX/Y)
                 const dx = touch.clientX - lastX;
                 const dy = touch.clientY - lastY;
 
-                // Appliquer la rotation
+                const sensitivity = gameState.settings.cameraSensitivity * 0.005;
+
                 camera.rotation.y -= dx * sensitivity;
                 camera.rotation.x -= dy * sensitivity;
                 camera.rotation.x = Math.max(-1.5, Math.min(1.5, camera.rotation.x));
                 
-                // Mettre à jour les dernières positions
                 lastX = touch.clientX;
                 lastY = touch.clientY;
             }, { passive: false });
             
             lookArea.addEventListener('touchend', (e) => {
-                if (e.changedTouches[0].identifier === lookTouchId) {
-                    lookTouchId = null;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === lookTouchId) {
+                        lookTouchId = null;
+                        break;
+                    }
                 }
             });
             lookArea.addEventListener('touchcancel', (e) => {
-                if (e.changedTouches[0].identifier === lookTouchId) {
-                    lookTouchId = null;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === lookTouchId) {
+                        lookTouchId = null;
+                        break;
+                    }
                 }
             });
 
 
-            // --- 3. Bouton d'Interaction ---
             btnInteract.addEventListener('click', () => {
                 if(gameState.isPaused) return;
                 const obj = getInteractable();
@@ -1214,7 +1496,6 @@
                 }
             });
             
-            // --- 4. Bouton Note ---
             btnNote.addEventListener('click', () => {
                 if(gameState.isPaused) return;
                 const portableNote = gameState.inventory.find(item => item.isNote);
@@ -1236,19 +1517,16 @@
             if(document.pointerLockElement === document.body || gameState.isMobile) {
                 const speed = 0.1;
                 
-                // Vecteurs de direction basés sur la rotation Y de la camera
                 const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0,1,0), camera.rotation.y).setY(0).normalize();
                 const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0,1,0), camera.rotation.y).setY(0).normalize();
 
                 const playerOrigin = camera.position.clone();
                 const nextPos = camera.position.clone();
-                const directionVector = new THREE.Vector3(); // Vecteur réutilisable pour la direction du rayon
+                const directionVector = new THREE.Vector3();
                 
-                // Garder le joueur à une hauteur fixe (pas de saut/chute)
                 nextPos.y = PLAYER_HEIGHT; 
                 playerOrigin.y = PLAYER_HEIGHT;
 
-                // Calculer le montant du mouvement basé sur l'entrée
                 let moveForward = 0;
                 let moveRight = 0;
 
@@ -1262,16 +1540,9 @@
                     if(keys.a) moveRight -= speed;
                 }
 
-                // ------------------------------------
                 // COLLISION (Mouvement par axe pour le 'glissement' le long des murs)
-                // ------------------------------------
-
-                // 1. Mouvement Z (Avant/Arrière)
                 if (Math.abs(moveForward) > 0.001) {
-                    // Direction du rayon : vers l'avant ou l'arrière
                     directionVector.copy(forward).multiplyScalar(moveForward > 0 ? 1 : -1);
-                    
-                    // Rayon de vérification : distance de mouvement + rayon du joueur
                     const rayDistance = Math.abs(moveForward) + PLAYER_RADIUS;
                     
                     collisionRaycaster.set(playerOrigin, directionVector);
@@ -1281,16 +1552,12 @@
                     const intersects = collisionRaycaster.intersectObjects(colliders, false);
 
                     if (intersects.length === 0 || intersects[0].distance > PLAYER_RADIUS) {
-                        // Pas de collision détectée : appliquer le mouvement Z
                         nextPos.addScaledVector(forward, moveForward);
                     }
                 }
 
-                // 2. Mouvement X (Droite/Gauche)
                 if (Math.abs(moveRight) > 0.001) {
-                    // Direction du rayon : vers la droite ou la gauche
                     directionVector.copy(right).multiplyScalar(moveRight > 0 ? 1 : -1);
-
                     const rayDistance = Math.abs(moveRight) + PLAYER_RADIUS; 
 
                     collisionRaycaster.set(playerOrigin, directionVector);
@@ -1300,12 +1567,10 @@
                     const intersects = collisionRaycaster.intersectObjects(colliders, false);
 
                     if (intersects.length === 0 || intersects[0].distance > PLAYER_RADIUS) {
-                        // Pas de collision détectée : appliquer le mouvement X
                         nextPos.addScaledVector(right, moveRight);
                     }
                 }
                 
-                // 3. Mise à jour finale de la position (avec vérification des limites globales pour la sécurité)
                 if(Math.abs(nextPos.x) < 20 && Math.abs(nextPos.z) < 20) {
                      camera.position.copy(nextPos);
                 }
@@ -1315,11 +1580,11 @@
                 const text = document.getElementById('interaction-text');
                 
                 if(target) {
-                    updateCrosshairStyle(true); // Activer le style interactif
+                    updateCrosshairStyle(true); 
                     text.innerText = target.userData.name + (gameState.isMobile ? ' [CLIC]' : ' [Clic G]');
                     text.style.opacity = 1;
                 } else {
-                    updateCrosshairStyle(false); // Revenir au style par défaut
+                    updateCrosshairStyle(false); 
                     text.style.opacity = 0;
                 }
             }
@@ -1331,13 +1596,14 @@
         document.addEventListener('pointerlockchange', () => {
             if(gameState.isMobile) return; 
 
-            const blocker = document.getElementById('blocker');
-            if(document.pointerLockElement === document.body) {
-                blocker.classList.add('hidden');
-                gameState.isPaused = false;
-            } else {
-                if(!gameState.isPaused) blocker.classList.remove('hidden'); 
-            }
+            // Si le Pointer Lock est perdu (généralement par Échap) et que le jeu est en cours
+            if (document.pointerLockElement !== document.body && gameState.level > 0 && !gameState.isPaused) {
+                // On s'assure qu'il ne s'agit pas de la réouverture du Keypad/Note
+                 if (document.getElementById('keypad-overlay').classList.contains('hidden') && 
+                     document.getElementById('note-overlay').classList.contains('hidden')) {
+                     pauseGame();
+                 }
+            } 
         });
 
         init();
